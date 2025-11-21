@@ -1,9 +1,9 @@
 package com.daedan.di
 
-interface DiComponent {
-    val appContainerStore: AppContainerStore
+import com.daedan.di.dsl.DependencyModuleBuilder
 
-    fun register(vararg modules: DependencyModule) {
-        appContainerStore.registerFactory(*modules)
-    }
+interface DiComponent {
+    val rootScope: Scope
+
+    fun root(block: DependencyModuleBuilder.() -> Unit): DependencyModule = module(rootScope, block)
 }
