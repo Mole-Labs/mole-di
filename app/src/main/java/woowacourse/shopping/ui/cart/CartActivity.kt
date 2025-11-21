@@ -6,25 +6,25 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.daedan.di.util.activityRetainedScope
-import com.daedan.di.util.activityScope
 import com.daedan.di.util.autoViewModels
+import com.daedan.di.util.getRootScope
 import com.daedan.di.util.inject
+import com.daedan.di.util.registerActivityRetainedLifecycle
+import com.daedan.di.util.registerActivityScope
 import woowacourse.shopping.R
 import woowacourse.shopping.databinding.ActivityCartBinding
-import kotlin.getValue
 
 class CartActivity : AppCompatActivity() {
     private val binding by lazy { ActivityCartBinding.inflate(layoutInflater) }
 
     private val viewModel by autoViewModels<CartViewModel>()
 
-    private val scope = activityScope()
-
-    private val retainedScope = activityRetainedScope()
-    private val dateFormatter by inject<DateFormatter>(scope)
+    private val dateFormatter by inject<DateFormatter>(
+        scope = getRootScope().getSubScope<CartActivity>(),
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        registerActivityScope()
         super.onCreate(savedInstanceState)
         setupContentView()
         setupBinding()
@@ -38,6 +38,7 @@ class CartActivity : AppCompatActivity() {
     }
 
     private fun setupContentView() {
+        registerActivityRetainedLifecycle()
         enableEdgeToEdge()
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->

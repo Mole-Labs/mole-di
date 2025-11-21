@@ -3,16 +3,15 @@ package com.daedan.di.fixture
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import com.daedan.di.DiComponent
-import com.daedan.di.module
 import com.daedan.di.util.activityRetainedScope
-import com.daedan.di.util.activityScope
 import com.daedan.di.util.autoViewModels
 import com.daedan.di.util.inject
+import com.daedan.di.util.registerActivityScope
 
 class FakeActivity : ComponentActivity() {
     val viewModel by autoViewModels<TestViewModel>()
 
-    val activityScope = activityScope()
+    val activityScope = registerActivityScope()
 
     val activityRetainedScope = activityRetainedScope()
 
@@ -29,7 +28,7 @@ class FakeActivity : ComponentActivity() {
 }
 
 class FakeInvalidScopeActivity : ComponentActivity() {
-    val activityScope = activityScope()
+    val activityScope = registerActivityScope()
 
     val activityArgument by inject<Parent>(activityScope)
 
@@ -40,7 +39,7 @@ class FakeInvalidScopeActivity : ComponentActivity() {
 }
 
 fun DiComponent.testModule() =
-    module {
+    root {
         scope<TestViewModel> {
             scoped { Child1() }
         }
@@ -54,7 +53,7 @@ fun DiComponent.testModule() =
     }
 
 fun DiComponent.invalidScopeModule() =
-    module {
+    root {
         single { Child2() }
         scope<FakeInvalidScopeActivity> {
             scoped { Child1() }

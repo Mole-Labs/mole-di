@@ -1,7 +1,6 @@
 package woowacourse.shopping.di
 
 import com.daedan.di.DiComponent
-import com.daedan.di.module
 import com.daedan.di.util.annotated
 import com.daedan.di.util.named
 import woowacourse.shopping.data.repository.DefaultCartRepository
@@ -11,14 +10,14 @@ import woowacourse.shopping.domain.repository.ProductRepository
 import woowacourse.shopping.ui.MainViewModel
 
 fun DiComponent.repositoryModule() =
-    module {
+    root {
         single<CartRepository>(annotated<RoomDBCartRepository>()) {
             DefaultCartRepository(
                 get(),
             )
         }
         scope<MainViewModel> {
-            scoped<ProductRepository>(named("productRepository")) {
+            single<ProductRepository>(named("productRepository")) {
                 DefaultProductRepository()
             }
         }

@@ -1,13 +1,12 @@
 package woowacourse.shopping.di
 
 import com.daedan.di.DiComponent
-import com.daedan.di.module
 import woowacourse.shopping.ui.cart.CartActivity
 import woowacourse.shopping.ui.cart.DateFormatter
 
 fun DiComponent.dateFormatterModule() =
-    module {
+    root {
         scope<CartActivity> {
-            scoped { scope -> DateFormatter(get(scope = scope)) }
+            single { DateFormatter(get()) }
         }
     }

@@ -31,16 +31,16 @@ class AppContainerStoreTest {
     @Test
     fun `instantiate는 등록된 팩토리를 통해 객체를 생성해야 한다`() {
         // given
-        val appContainerStore = AppContainerStore()
+        val scope = Scope()
         val qualifier = TypeQualifier(Parent::class)
         val module =
-            module(appContainerStore) {
+            module(scope) {
                 single { Parent(Child1(), Child2()) }
             }
-        appContainerStore.registerFactory(module)
+        scope.registerFactory(module)
 
         // when
-        val actual = appContainerStore.instantiate(qualifier)
+        val actual = scope.get(qualifier)
 
         // then
         assertThat(actual).isInstanceOf(Parent::class.java)
@@ -49,19 +49,19 @@ class AppContainerStoreTest {
     @Test
     fun `중첩 의존성 체인을 성공적으로 해결하고 주입해야 한다`() {
         // given
-        val appContainerStore = AppContainerStore()
+        val scope = Scope()
         val module =
-            module(appContainerStore) {
+            module(scope) {
                 single { Child1() }
                 single { Child2() }
                 single { Parent(child1 = get(), child2 = get()) }
                 single { NestedDependency(get()) }
             }
-        appContainerStore.registerFactory(module)
+        scope.registerFactory(module)
 
         // when
         val actual =
-            appContainerStore.instantiate(
+            scope.get(
                 TypeQualifier(NestedDependency::class),
             )
 
@@ -72,16 +72,16 @@ class AppContainerStoreTest {
     @Test
     fun `factory로 등록한 의존성은 매번 다른 인스턴스를 생성한다`() {
         // given
-        val appContainerStore = AppContainerStore()
+        val scope = Scope()
         val module =
-            module(appContainerStore) {
+            module(scope) {
                 factory { Child1() }
             }
-        appContainerStore.registerFactory(module)
+        scope.registerFactory(module)
 
         // when
-        val expected = appContainerStore.instantiate(TypeQualifier(Child1::class))
-        val actual = appContainerStore.instantiate(TypeQualifier(Child1::class))
+        val expected = scope.get(TypeQualifier(Child1::class))
+        val actual = scope.get(TypeQualifier(Child1::class))
 
         // then
         assertThat(actual).isNotSameAs(expected)
@@ -90,22 +90,22 @@ class AppContainerStoreTest {
     @Test
     fun `single로 등록한 의존성은 동일 인스턴스를 반환한다`() {
         // given
-        val appContainerStore = AppContainerStore()
+        val scope = Scope()
         val module =
-            module(appContainerStore) {
+            module(scope) {
                 single { Child1() }
                 single { Child2() }
                 single { Parent(child1 = get(), child2 = get()) }
             }
-        appContainerStore.registerFactory(module)
+        scope.registerFactory(module)
 
         // when
         val actual =
-            appContainerStore.instantiate(
+            scope.get(
                 TypeQualifier(Parent::class),
             )
         val expected =
-            appContainerStore.instantiate(
+            scope.get(
                 TypeQualifier(Parent::class),
             )
 
@@ -116,20 +116,20 @@ class AppContainerStoreTest {
     @Test
     fun `순환 참조가 발생하면 예외를 던진다`() {
         // given
-        val appContainerStore = AppContainerStore()
+        val scope = Scope()
         val module =
-            module(appContainerStore) {
+            module(scope) {
                 single { CircularDependency1(get()) }
                 single { CircularDependency2(get()) }
                 single { Parent(get(), get()) }
             }
 
         // when
-        appContainerStore.registerFactory(module)
+        scope.registerFactory(module)
 
         // then
         assertThatThrownBy {
-            appContainerStore.instantiate(
+            scope.get(
                 TypeQualifier(CircularDependency1::class),
             )
         }.message().contains("순환 참조가 발견되었습니다")
@@ -138,18 +138,18 @@ class AppContainerStoreTest {
     @Test
     fun `필수 의존성을 해결할 수 없으면 예외를 던진다`() {
         // given
-        val appContainerStore = AppContainerStore()
+        val scope = Scope()
         val module =
-            module(appContainerStore) {
+            module(scope) {
                 single { UnableReflectObject(get()) }
             }
 
         // when
-        appContainerStore.registerFactory(module)
+        scope.registerFactory(module)
 
         // then
         assertThatThrownBy {
-            appContainerStore.instantiate(
+            scope.get(
                 TypeQualifier(UnableReflectObject::class),
             )
         }.message().contains("주 생성자를 찾을 수 없습니다")
@@ -158,12 +158,12 @@ class AppContainerStoreTest {
     @Test
     fun `@Component가 없는 어노테이션은 인스턴스를 등록하지 않는다`() {
         // given
-        val appContainerStore = AppContainerStore()
+        val scope = Scope()
         val obj1 = ComponentObject1()
 
         // when - then
         assertThatThrownBy {
-            module(appContainerStore) {
+            module(scope) {
                 single(annotated<GeneralAnnotation>()) { obj1 }
             }
         }.message().contains("@Component 어노테이션으로 등록되지 않았습니다")
@@ -172,29 +172,29 @@ class AppContainerStoreTest {
     @Test
     fun `필드 주입을 수행할 수 있다`() {
         // given
-        val appContainerStore = AppContainerStore()
+        val scope = Scope()
         val module =
-            module(appContainerStore) {
+            module(scope) {
                 single { Child1() }
                 single { Child2() }
                 single { FieldInjection() }
             }
 
         // when
-        appContainerStore.registerFactory(module)
+        scope.registerFactory(module)
 
         // then
         val obj =
-            appContainerStore.instantiate(TypeQualifier(FieldInjection::class)) as FieldInjection
+            scope.get(TypeQualifier(FieldInjection::class)) as FieldInjection
         obj.assertPropertyInitialized()
     }
 
     @Test
     fun `같은 타입을 네이밍으로 구분하여 필드 주입을 수행할 수 있다`() {
         // given
-        val appContainerStore = AppContainerStore()
+        val scope = Scope()
         val module =
-            module(appContainerStore) {
+            module(scope) {
                 single { Child1() }
                 single { Child2() }
                 single(named("parent1")) { Parent(get(), get()) }
@@ -203,11 +203,11 @@ class AppContainerStoreTest {
             }
 
         // when
-        appContainerStore.registerFactory(module)
+        scope.registerFactory(module)
 
         // then
         val obj =
-            appContainerStore.instantiate(
+            scope.get(
                 TypeQualifier(FieldInjectionWithName::class),
             ) as FieldInjectionWithName
 
@@ -217,20 +217,20 @@ class AppContainerStoreTest {
     @Test
     fun `같은 타입을 어노테이션으로 구분하여 필드 주입을 수행할 수 있다`() {
         // given
-        val appContainerStore = AppContainerStore()
+        val scope = Scope()
         val module =
-            module(appContainerStore) {
+            module(scope) {
                 single(annotated<TestComponent1>()) { ComponentObject1() }
                 single(annotated<TestComponent2>()) { ComponentObject2() }
                 single { FieldInjectionWithAnnotation() }
             }
 
         // when
-        appContainerStore.registerFactory(module)
+        scope.registerFactory(module)
 
         // then
         val obj =
-            appContainerStore.instantiate(
+            scope.get(
                 TypeQualifier(FieldInjectionWithAnnotation::class),
             ) as FieldInjectionWithAnnotation
 
@@ -240,9 +240,9 @@ class AppContainerStoreTest {
     @Test
     fun `같은 타입을 네이밍으로 구분하여 생성자 주입을 수행할 수 있다`() {
         // given
-        val appContainerStore = AppContainerStore()
+        val scope = Scope()
         val module =
-            module(appContainerStore) {
+            module(scope) {
                 single { Child1() }
                 single { Child2() }
                 single { Parent(get(), get()) }
@@ -250,11 +250,11 @@ class AppContainerStoreTest {
             }
 
         // when
-        appContainerStore.registerFactory(module)
+        scope.registerFactory(module)
 
         // then
         assertThatCode {
-            appContainerStore.instantiate(
+            scope.get(
                 TypeQualifier(ConstructorInjectionWithName::class),
             ) as ConstructorInjectionWithName
         }.doesNotThrowAnyException()
@@ -263,9 +263,9 @@ class AppContainerStoreTest {
     @Test
     fun `같은 타입을 어노테이션으로 구분하여 생성자 주입을 수행할 수 있다`() {
         // given
-        val appContainerStore = AppContainerStore()
+        val scope = Scope()
         val module =
-            module(appContainerStore) {
+            module(scope) {
                 single(annotated<TestComponent1>()) { ComponentObject1() }
                 single(annotated<TestComponent2>()) { ComponentObject2() }
                 single {
@@ -275,11 +275,11 @@ class AppContainerStoreTest {
                     )
                 }
             }
-        appContainerStore.registerFactory(module)
+        scope.registerFactory(module)
 
         // when - then
         assertThatCode {
-            appContainerStore.instantiate(
+            scope.get(
                 TypeQualifier(ConstructorInjectionWithAnnotation::class),
             ) as ConstructorInjectionWithAnnotation
         }.doesNotThrowAnyException()
@@ -288,9 +288,9 @@ class AppContainerStoreTest {
     @Test
     fun `필드 주입과 생성자 주입을 동시에 수행할 수 있다`() {
         // given
-        val appContainerStore = AppContainerStore()
+        val scope = Scope()
         val module =
-            module(appContainerStore) {
+            module(scope) {
                 single { Child1() }
                 single { Child2() }
                 single(annotated<TestComponent1>()) { ComponentObject1() }
@@ -306,11 +306,11 @@ class AppContainerStoreTest {
                 }
             }
         // when
-        appContainerStore.registerFactory(module)
+        scope.registerFactory(module)
 
         // then
         assertThatCode {
-            appContainerStore.instantiate(
+            scope.get(
                 TypeQualifier(FieldAndConstructorInjection::class),
             ) as FieldAndConstructorInjection
         }.doesNotThrowAnyException()
@@ -319,25 +319,25 @@ class AppContainerStoreTest {
     @Test
     fun `동시에 같은 스레드에서 요청해도 한 번만 객체가 생성된다`() {
         // given
-        val appContainerStore = AppContainerStore()
+        val scope = Scope()
         val module =
-            module(appContainerStore) {
+            module(scope) {
                 single { Child1() }
                 single { Child2() }
                 single { Parent(get(), get()) }
             }
-        appContainerStore.registerFactory(module)
+        scope.registerFactory(module)
         var actual1: Parent? = null
         var actual2: Parent? = null
 
         // when
         val thread1 =
             thread {
-                actual1 = appContainerStore.instantiate(TypeQualifier(Parent::class)) as Parent
+                actual1 = scope.get(TypeQualifier(Parent::class)) as Parent
             }
         val thread2 =
             thread {
-                actual2 = appContainerStore.instantiate(TypeQualifier(Parent::class)) as Parent
+                actual2 = scope.get(TypeQualifier(Parent::class)) as Parent
             }
         thread1.join()
         thread2.join()
