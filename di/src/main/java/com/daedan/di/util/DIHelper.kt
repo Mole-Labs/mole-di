@@ -1,16 +1,13 @@
 package com.daedan.di.util
 
 import android.content.Context
-import com.daedan.di.AppContainerStore
+import com.daedan.di.Scope
 import com.daedan.di.annotation.Component
 import com.daedan.di.annotation.Inject
 import com.daedan.di.qualifier.AnnotationQualifier
 import com.daedan.di.qualifier.NamedQualifier
 import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
-import com.daedan.di.scope.NamedScope
-import com.daedan.di.scope.TypeScope
-import com.daedan.di.scope.UniqueScope
 import kotlin.reflect.KAnnotatedElement // 💡 KClass와 KProperty 모두 상속
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
@@ -59,17 +56,9 @@ inline fun <reified T : Annotation> annotated(): AnnotationQualifier = Annotatio
 
 fun named(name: String): NamedQualifier = NamedQualifier(name)
 
-fun withScope(name: String): NamedScope = NamedScope(name)
-
-inline fun <reified T : Any> withScope(): TypeScope = TypeScope(T::class)
-
-internal fun Context.registerCurrentContext(
-    store: AppContainerStore,
-    scope: UniqueScope,
-) {
-    store.putToCache(
+internal fun Context.registerCurrentContext(scope: Scope) {
+    scope.declare(
         qualifier = TypeQualifier(Context::class),
-        scope = scope,
         instance = this,
     )
 }
