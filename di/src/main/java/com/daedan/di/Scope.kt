@@ -46,6 +46,7 @@ class Scope(
                     require(!newFactoryMap.containsKey(key)) { ERR_CONFLICT_KEY }
                     newFactoryMap[key] = factory
                 }
+
                 is ScopeDependencyFactory -> {
                     require(!newScopeMap.containsKey(key)) { ERR_CONFLICT_KEY }
                     newScopeMap[key] = factory
@@ -67,26 +68,22 @@ class Scope(
 
     // 자식 스코프에서 실행
     fun closeAll() {
-        parent?.close(qualifier)
         cache.clear()
     }
 
     fun get(qualifier: Qualifier): Any {
         val inProgress = Collections.synchronizedSet(mutableSetOf<Qualifier>())
+
         return runCatching {
-            parent?.get(qualifier, inProgress)
-        }.getOrNull() ?: get(qualifier, inProgress)
+            get(qualifier, inProgress)
+        }.getOrNull() ?: parent?.get(qualifier, inProgress)
+            ?: error("$ERR_CANNOT_FIND_INSTANCE : $qualifier")
     }
 
     fun getSubScope(qualifier: Qualifier): Scope {
-        if (cache.containsKey(qualifier)) {
-            return cache[qualifier] as? Scope ?: error("$ERR_CANNOT_FIND_INSTANCE : $qualifier")
-        }
-
         synchronized(this) {
-            val scope = children[qualifier]?.invoke() ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
-            cache[qualifier] = scope
-            return scope
+            return children[qualifier]?.invoke()
+                ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
         }
     }
 
@@ -156,14 +153,6 @@ class Scope(
         when (createRule) {
             CreateRule.SINGLE -> cache[qualifier] = instance
             CreateRule.FACTORY -> Unit
-        }
-    }
-
-    // 부모 스코프의 등록된 자식 스코프 연결 끊기
-    private fun close(qualifier: Qualifier) {
-        if (!cache.containsKey(qualifier)) error("$ERR_CANNOT_FIND_INSTANCE : $qualifier")
-        if (cache[qualifier] is Scope) {
-            cache.remove(qualifier)
         }
     }
 
