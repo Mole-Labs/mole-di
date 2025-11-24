@@ -12,7 +12,6 @@ import com.daedan.di.qualifier.TypeQualifier
 @MainThread
 fun ComponentActivity.registerActivityScope(scope: Scope) {
     initialize(scope)
-    scope
 }
 
 @MainThread
@@ -29,11 +28,11 @@ inline fun <reified T : Any> ComponentActivity.registerActivityScope() {
 }
 
 inline fun <reified T> ComponentActivity.inject(
+    scope: Lazy<Scope> = lazy { getRootScope() },
     qualifier: Qualifier = TypeQualifier(T::class),
-    scope: Scope = getRootScope(),
 ): Lazy<T> =
     lazy {
-        scope.get(qualifier) as T
+        scope.value.get(qualifier) as T
     }
 
 @SuppressLint("RestrictedApi")

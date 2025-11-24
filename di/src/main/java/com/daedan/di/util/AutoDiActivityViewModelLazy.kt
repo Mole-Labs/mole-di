@@ -7,20 +7,21 @@ import androidx.lifecycle.ViewModelLazy
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.daedan.di.Scope
 import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
 
 @MainThread
 inline fun <reified VM : ViewModel> ComponentActivity.autoViewModels(
+    scope: Lazy<Scope> = lazy { getRootScope() },
     qualifier: Qualifier = TypeQualifier(VM::class),
     noinline extrasProducer: (() -> CreationExtras)? = null,
 ): Lazy<VM> {
     val factory =
         viewModelFactory {
             initializer {
-                val scope = getRootScope()
-                val viewModel = scope.get(qualifier) as VM
-                viewModel.addCloseable { scope.closeAll() }
+                val viewModel = scope.value.get(qualifier) as VM
+                viewModel.addCloseable { scope.value.closeAll() }
                 viewModel
             }
         }
