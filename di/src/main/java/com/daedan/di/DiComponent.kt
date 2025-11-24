@@ -1,9 +1,10 @@
 package com.daedan.di
 
-import com.daedan.di.dsl.DependencyModuleBuilder
+import com.daedan.di.module.ModuleDefinition
+import com.daedan.di.module.combine
 
 interface DiComponent {
     val rootScope: Scope
 
-    fun root(block: DependencyModuleBuilder.() -> Unit): DependencyModule = module(rootScope, block)
+    fun combineToRoot(vararg block: ModuleDefinition) = combine(rootScope, *block)
 }

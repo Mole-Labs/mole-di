@@ -2,11 +2,11 @@ package woowacourse.shopping.di
 
 import android.content.Context
 import androidx.room.Room
-import com.daedan.di.DiComponent
+import com.daedan.di.module.ModuleDefinition
 import woowacourse.shopping.data.ShoppingDatabase
 
-fun DiComponent.dataModule(applicationContext: Context) =
-    root {
+fun dataModule(applicationContext: Context): ModuleDefinition =
+    {
         single {
             Room
                 .databaseBuilder(

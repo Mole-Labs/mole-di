@@ -2,6 +2,9 @@ package com.daedan.di
 
 import com.daedan.di.annotation.Component
 import com.daedan.di.annotation.Inject
+import com.daedan.di.module.DependencyModule
+import com.daedan.di.module.InstanceDependencyFactory
+import com.daedan.di.module.ScopeDependencyFactory
 import com.daedan.di.qualifier.CreateRule
 import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
@@ -18,8 +21,8 @@ class Scope(
 ) {
     private val cache = mutableMapOf<Qualifier, Any>()
 
-    private val factory = mutableMapOf<Qualifier, DependencyFactory<*>>()
-    private val children = mutableMapOf<Qualifier, DependencyFactory<out Scope>>()
+    private val factory = mutableMapOf<Qualifier, InstanceDependencyFactory<*>>()
+    private val children = mutableMapOf<Qualifier, ScopeDependencyFactory>()
 
     fun declare(
         qualifier: Qualifier,
@@ -31,9 +34,24 @@ class Scope(
 
     fun registerFactory(vararg modules: DependencyModule) {
         val newFactories = modules.flatMap { it.factories }
+
         // Map으로 변환
-        val newFactoryMap = newFactories.associateBy { it.qualifier }
-        require(newFactoryMap.size == newFactories.size) { ERR_CONFLICT_KEY }
+        val newFactoryMap = mutableMapOf<Qualifier, InstanceDependencyFactory<*>>()
+        val newScopeMap = mutableMapOf<Qualifier, ScopeDependencyFactory>()
+
+        newFactories.forEach { factory ->
+            val key = factory.qualifier
+            when (factory) {
+                is InstanceDependencyFactory<*> -> {
+                    require(!newFactoryMap.containsKey(key)) { ERR_CONFLICT_KEY }
+                    newFactoryMap[key] = factory
+                }
+                is ScopeDependencyFactory -> {
+                    require(!newScopeMap.containsKey(key)) { ERR_CONFLICT_KEY }
+                    newScopeMap[key] = factory
+                }
+            }
+        }
 
         val conflictingKeys =
             newFactoryMap.keys.filter {
@@ -43,15 +61,8 @@ class Scope(
             "$ERR_CONFLICT_KEY ${conflictingKeys.joinToString()}"
         }
 
+        children.putAll(newScopeMap)
         factory.putAll(newFactoryMap)
-    }
-
-    // 부모 스코프의 등록된 자식 스코프 연결 끊기
-    fun close(qualifier: Qualifier) {
-        if (!cache.containsKey(qualifier)) error("$ERR_CANNOT_FIND_INSTANCE : $qualifier")
-        if (cache[qualifier] is Scope) {
-            cache.remove(qualifier)
-        }
     }
 
     // 자식 스코프에서 실행
@@ -67,7 +78,17 @@ class Scope(
         }.getOrNull() ?: get(qualifier, inProgress)
     }
 
-    fun getSubScope(qualifier: Qualifier): Scope = get(qualifier) as Scope
+    fun getSubScope(qualifier: Qualifier): Scope {
+        if (cache.containsKey(qualifier)) {
+            return cache[qualifier] as? Scope ?: error("$ERR_CANNOT_FIND_INSTANCE : $qualifier")
+        }
+
+        synchronized(this) {
+            val scope = children[qualifier]?.invoke() ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
+            cache[qualifier] = scope
+            return scope
+        }
+    }
 
     inline fun <reified T : Any> getSubScope(): Scope = getSubScope(TypeQualifier(T::class))
 
@@ -75,7 +96,6 @@ class Scope(
         qualifier: Qualifier,
         inProgress: MutableSet<Qualifier>,
     ): Any {
-        parent?.get(qualifier)
         if (cache.containsKey(qualifier)) {
             return cache[qualifier] ?: error("$ERR_CANNOT_FIND_INSTANCE : $qualifier")
         }
@@ -136,6 +156,14 @@ class Scope(
         when (createRule) {
             CreateRule.SINGLE -> cache[qualifier] = instance
             CreateRule.FACTORY -> Unit
+        }
+    }
+
+    // 부모 스코프의 등록된 자식 스코프 연결 끊기
+    private fun close(qualifier: Qualifier) {
+        if (!cache.containsKey(qualifier)) error("$ERR_CANNOT_FIND_INSTANCE : $qualifier")
+        if (cache[qualifier] is Scope) {
+            cache.remove(qualifier)
         }
     }
 

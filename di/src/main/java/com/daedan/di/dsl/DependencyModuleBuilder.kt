@@ -1,9 +1,11 @@
 package com.daedan.di.dsl
 
 import androidx.lifecycle.ViewModel
-import com.daedan.di.DependencyFactory
-import com.daedan.di.DependencyModule
 import com.daedan.di.Scope
+import com.daedan.di.module.DependencyFactory
+import com.daedan.di.module.DependencyModule
+import com.daedan.di.module.InstanceDependencyFactory
+import com.daedan.di.module.ScopeDependencyFactory
 import com.daedan.di.qualifier.CreateRule
 import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
@@ -18,7 +20,7 @@ class DependencyModuleBuilder(
         noinline create: () -> T,
     ) {
         val createRule = CreateRule.FACTORY
-        factories.add(DependencyFactory(qualifier, createRule, create))
+        factories.add(InstanceDependencyFactory(qualifier, createRule, create))
     }
 
     inline fun <reified T : Any> factory(
@@ -26,7 +28,7 @@ class DependencyModuleBuilder(
         noinline create: () -> T,
     ) {
         val createRule = CreateRule.FACTORY
-        factories.add(DependencyFactory(qualifier, createRule, create))
+        factories.add(InstanceDependencyFactory(qualifier, createRule, create))
     }
 
     inline fun <reified T : Any> single(
@@ -34,7 +36,7 @@ class DependencyModuleBuilder(
         noinline create: () -> T,
     ) {
         val createRule = CreateRule.SINGLE
-        factories.add(DependencyFactory(qualifier, createRule, create))
+        factories.add(InstanceDependencyFactory(qualifier, createRule, create))
     }
 
     inline fun <reified T : Any> scope(
@@ -43,7 +45,7 @@ class DependencyModuleBuilder(
     ) {
         val createRule = CreateRule.SINGLE
         factories.add(
-            DependencyFactory(
+            ScopeDependencyFactory(
                 qualifier,
                 createRule,
             ) {

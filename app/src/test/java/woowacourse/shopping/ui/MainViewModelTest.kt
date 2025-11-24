@@ -2,7 +2,7 @@ package woowacourse.shopping.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.daedan.di.AppContainerStore
-import com.daedan.di.module
+import com.daedan.di.module.combine
 import com.daedan.di.qualifier.NamedQualifier
 import com.daedan.di.util.annotated
 import com.daedan.di.util.getQualifier
@@ -38,7 +38,7 @@ class MainViewModelTest {
     fun setup() {
         val appContainerStore = AppContainerStore()
         val module =
-            module(appContainerStore) {
+            combine(appContainerStore) {
                 single<ProductRepository>(named("productRepository")) {
                     FakeProductRepository(
                         fakeAllProducts =

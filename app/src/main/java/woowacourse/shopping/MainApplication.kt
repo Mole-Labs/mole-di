@@ -16,11 +16,11 @@ class MainApplication :
 
     override fun onCreate() {
         super.onCreate()
-        rootScope.registerFactory(
+        combineToRoot(
+            dateFormatterModule(),
             dataModule(this@MainApplication),
             repositoryModule(),
             viewModelModule(),
-            dateFormatterModule(),
         )
     }
 }

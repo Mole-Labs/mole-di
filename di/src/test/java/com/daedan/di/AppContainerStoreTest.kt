@@ -18,6 +18,7 @@ import com.daedan.di.fixture.Parent
 import com.daedan.di.fixture.TestComponent1
 import com.daedan.di.fixture.TestComponent2
 import com.daedan.di.fixture.UnableReflectObject
+import com.daedan.di.module.combine
 import com.daedan.di.qualifier.TypeQualifier
 import com.daedan.di.util.annotated
 import com.daedan.di.util.named
@@ -34,7 +35,7 @@ class AppContainerStoreTest {
         val scope = Scope()
         val qualifier = TypeQualifier(Parent::class)
         val module =
-            module(scope) {
+            combine(scope) {
                 single { Parent(Child1(), Child2()) }
             }
         scope.registerFactory(module)
@@ -51,7 +52,7 @@ class AppContainerStoreTest {
         // given
         val scope = Scope()
         val module =
-            module(scope) {
+            combine(scope) {
                 single { Child1() }
                 single { Child2() }
                 single { Parent(child1 = get(), child2 = get()) }
@@ -74,7 +75,7 @@ class AppContainerStoreTest {
         // given
         val scope = Scope()
         val module =
-            module(scope) {
+            combine(scope) {
                 factory { Child1() }
             }
         scope.registerFactory(module)
@@ -92,7 +93,7 @@ class AppContainerStoreTest {
         // given
         val scope = Scope()
         val module =
-            module(scope) {
+            combine(scope) {
                 single { Child1() }
                 single { Child2() }
                 single { Parent(child1 = get(), child2 = get()) }
@@ -118,7 +119,7 @@ class AppContainerStoreTest {
         // given
         val scope = Scope()
         val module =
-            module(scope) {
+            combine(scope) {
                 single { CircularDependency1(get()) }
                 single { CircularDependency2(get()) }
                 single { Parent(get(), get()) }
@@ -140,7 +141,7 @@ class AppContainerStoreTest {
         // given
         val scope = Scope()
         val module =
-            module(scope) {
+            combine(scope) {
                 single { UnableReflectObject(get()) }
             }
 
@@ -163,7 +164,7 @@ class AppContainerStoreTest {
 
         // when - then
         assertThatThrownBy {
-            module(scope) {
+            combine(scope) {
                 single(annotated<GeneralAnnotation>()) { obj1 }
             }
         }.message().contains("@Component 어노테이션으로 등록되지 않았습니다")
@@ -174,7 +175,7 @@ class AppContainerStoreTest {
         // given
         val scope = Scope()
         val module =
-            module(scope) {
+            combine(scope) {
                 single { Child1() }
                 single { Child2() }
                 single { FieldInjection() }
@@ -194,7 +195,7 @@ class AppContainerStoreTest {
         // given
         val scope = Scope()
         val module =
-            module(scope) {
+            combine(scope) {
                 single { Child1() }
                 single { Child2() }
                 single(named("parent1")) { Parent(get(), get()) }
@@ -219,7 +220,7 @@ class AppContainerStoreTest {
         // given
         val scope = Scope()
         val module =
-            module(scope) {
+            combine(scope) {
                 single(annotated<TestComponent1>()) { ComponentObject1() }
                 single(annotated<TestComponent2>()) { ComponentObject2() }
                 single { FieldInjectionWithAnnotation() }
@@ -242,7 +243,7 @@ class AppContainerStoreTest {
         // given
         val scope = Scope()
         val module =
-            module(scope) {
+            combine(scope) {
                 single { Child1() }
                 single { Child2() }
                 single { Parent(get(), get()) }
@@ -265,7 +266,7 @@ class AppContainerStoreTest {
         // given
         val scope = Scope()
         val module =
-            module(scope) {
+            combine(scope) {
                 single(annotated<TestComponent1>()) { ComponentObject1() }
                 single(annotated<TestComponent2>()) { ComponentObject2() }
                 single {
@@ -290,7 +291,7 @@ class AppContainerStoreTest {
         // given
         val scope = Scope()
         val module =
-            module(scope) {
+            combine(scope) {
                 single { Child1() }
                 single { Child2() }
                 single(annotated<TestComponent1>()) { ComponentObject1() }
@@ -321,7 +322,7 @@ class AppContainerStoreTest {
         // given
         val scope = Scope()
         val module =
-            module(scope) {
+            combine(scope) {
                 single { Child1() }
                 single { Child2() }
                 single { Parent(get(), get()) }
