@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.daedan.di.Scope
 import com.daedan.di.util.autoViewModels
 import com.daedan.di.util.getRootScope
 import woowacourse.shopping.R
@@ -17,14 +18,13 @@ import woowacourse.shopping.ui.cart.CartActivity
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
-    private val viewModel by autoViewModels<MainViewModel>(
-        lazy {
-            getRootScope().getSubScope<MainViewModel>()
-        },
-    )
+    private lateinit var scope: Scope
+
+    private val viewModel by autoViewModels<MainViewModel>(scope)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        scope = getRootScope().getSubScope<MainViewModel>()
         setupContentView()
         setupBinding()
         setupToolbar()

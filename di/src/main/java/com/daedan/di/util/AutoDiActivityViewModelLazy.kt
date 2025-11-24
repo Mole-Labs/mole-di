@@ -13,15 +13,15 @@ import com.daedan.di.qualifier.TypeQualifier
 
 @MainThread
 inline fun <reified VM : ViewModel> ComponentActivity.autoViewModels(
-    scope: Lazy<Scope> = lazy { getRootScope() },
+    scope: Scope,
     qualifier: Qualifier = TypeQualifier(VM::class),
     noinline extrasProducer: (() -> CreationExtras)? = null,
 ): Lazy<VM> {
     val factory =
         viewModelFactory {
             initializer {
-                val viewModel = scope.value.get(qualifier) as VM
-                viewModel.addCloseable { scope.value.closeAll() }
+                val viewModel = scope.get(qualifier) as VM
+                viewModel.addCloseable { scope.closeAll() }
                 viewModel
             }
         }

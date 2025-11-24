@@ -9,24 +9,24 @@ import androidx.core.view.WindowInsetsCompat
 import com.daedan.di.Scope
 import com.daedan.di.util.autoViewModels
 import com.daedan.di.util.getRootScope
+import com.daedan.di.util.initialize
 import com.daedan.di.util.inject
 import com.daedan.di.util.registerActivityRetainedLifecycle
-import com.daedan.di.util.registerActivityScope
 import woowacourse.shopping.R
 import woowacourse.shopping.databinding.ActivityCartBinding
 
 class CartActivity : AppCompatActivity() {
     private val binding by lazy { ActivityCartBinding.inflate(layoutInflater) }
 
-    private val viewModel by autoViewModels<CartViewModel>()
+    private val viewModel by autoViewModels<CartViewModel>(scope)
 
     private lateinit var scope: Scope
 
-    private val dateFormatter by inject<DateFormatter>(lazy { scope })
+    private val dateFormatter by scope.inject<DateFormatter>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         scope = getRootScope().getSubScope<CartActivity>()
-        registerActivityScope(scope)
+        initialize(scope)
         super.onCreate(savedInstanceState)
         setupContentView()
         setupBinding()
