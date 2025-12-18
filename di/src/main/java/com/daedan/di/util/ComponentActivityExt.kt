@@ -1,41 +1,27 @@
 package com.daedan.di.util
 
+import android.app.Activity
 import androidx.activity.ComponentActivity
 import com.daedan.di.Scope
-import com.daedan.di.dsl.finder.AbstractFinderBuilder
-import com.daedan.di.dsl.finder.ScopeFinderBuilder
-import com.daedan.di.finder.Finder
+import com.daedan.di.dsl.path.ActivityScopePathBuilder
+import com.daedan.di.path.Path
 import com.daedan.di.qualifier.TypeQualifier
 
 fun ComponentActivity.activityScope(
-    finderScope: AbstractFinderBuilder.() -> Finder = {
-        Finder(TypeQualifier(this::class))
+    pathBuilder: ActivityScopePathBuilder.() -> Path = {
+        Path(TypeQualifier(this::class))
     },
-): Scope =
-    activityScope(
-        finder = finderScope(ScopeFinderBuilder()),
-        scope = getRootScope(),
-    )
-
-inline fun <reified T : Any> ComponentActivity.activityScope(
-    finderScope: AbstractFinderBuilder.() -> Finder = {
-        Finder(TypeQualifier(T::class))
-    },
-): Scope =
-    activityScope(
-        finder = finderScope(ScopeFinderBuilder()),
-        scope = getRootScope(),
-    )
-
-@PublishedApi
-internal fun ComponentActivity.activityScope(
-    finder: Finder,
-    scope: Scope = getRootScope(),
-): Scope =
-    if (finder.next != null) {
-        val qualifier = finder.qualifier
-        val scope = scope.getSubScope(qualifier)
-        activityScope(finder.next, scope)
-    } else {
-        scope
+): Scope {
+    val path = pathBuilder(ActivityScopePathBuilder(Path()))
+    var scope: Scope = getRootScope()
+    for (qualifier in path.order) {
+        scope = scope.getSubScope(qualifier)
     }
+    return scope
+}
+
+inline fun <reified T : Activity> ComponentActivity.activityScope(
+    noinline pathBuilder: ActivityScopePathBuilder.() -> Path = {
+        Path(TypeQualifier(T::class))
+    },
+): Scope = activityScope(pathBuilder)
