@@ -1,4 +1,4 @@
-package com.daedan.di.dsl
+package com.daedan.di.dsl.module
 
 import com.daedan.di.Scope
 

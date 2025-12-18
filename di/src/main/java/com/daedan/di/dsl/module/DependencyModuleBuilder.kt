@@ -1,6 +1,7 @@
-package com.daedan.di.dsl
+package com.daedan.di.dsl.module
 
 import com.daedan.di.Scope
+import com.daedan.di.dsl.ModuleBuilderDSL
 import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
 

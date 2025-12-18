@@ -1,7 +1,8 @@
-package com.daedan.di.dsl
+package com.daedan.di.dsl.module
 
 import androidx.lifecycle.ViewModel
 import com.daedan.di.Scope
+import com.daedan.di.dsl.ModuleBuilderDSL
 import com.daedan.di.module.DependencyFactory
 import com.daedan.di.module.DependencyModule
 import com.daedan.di.module.InstanceDependencyFactory
