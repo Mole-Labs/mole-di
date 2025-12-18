@@ -5,7 +5,7 @@ import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
 
 @ModuleBuilderDSL
-class DependencyModuleBuilder(
+class ActivityRetainedScopeModuleBuilder(
     override val scope: Scope,
 ) : AbstractModuleBuilder() {
     inline fun <reified T : Any> activityScope(
@@ -13,13 +13,6 @@ class DependencyModuleBuilder(
         noinline block: ActivityScopeModuleBuilder.() -> Unit,
     ) {
         baseScope(qualifier, { ActivityScopeModuleBuilder(this) }, block)
-    }
-
-    inline fun <reified T : Any> activityRetainedScope(
-        qualifier: Qualifier = TypeQualifier(T::class),
-        noinline block: ActivityRetainedScopeModuleBuilder.() -> Unit,
-    ) {
-        baseScope(qualifier, { ActivityRetainedScopeModuleBuilder(this) }, block)
     }
 
     inline fun <reified T : Any> viewModelScope(
