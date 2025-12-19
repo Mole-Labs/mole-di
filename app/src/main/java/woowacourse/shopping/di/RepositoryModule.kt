@@ -20,6 +20,11 @@ fun repositoryModule(): ModuleDefinition =
             single<ProductRepository>(named("productRepository")) {
                 DefaultProductRepository()
             }
-            viewModel { MainViewModel() }
+            viewModel {
+                MainViewModel(
+                    get(named("productRepository")),
+                    get(annotated<RoomDBCartRepository>()),
+                )
+            }
         }
     }

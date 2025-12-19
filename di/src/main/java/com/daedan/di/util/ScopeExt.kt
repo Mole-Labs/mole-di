@@ -1,10 +1,10 @@
 package com.daedan.di.util
 
 import com.daedan.di.dsl.path.ScopePathBuilder
-import com.daedan.di.path.AndroidScopes
 import com.daedan.di.path.Path
 import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
+import com.daedan.di.scope.AndroidScopes
 import com.daedan.di.scope.Scope
 
 fun Scope.subScope(pathBuilder: ScopePathBuilder.() -> Path): Scope {

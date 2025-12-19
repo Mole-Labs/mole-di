@@ -10,11 +10,11 @@ import com.daedan.di.dsl.path.ActivityRetainedScopePathBuilder
 import com.daedan.di.dsl.path.ActivityScopePathBuilder
 import com.daedan.di.dsl.path.Root
 import com.daedan.di.dsl.path.ViewModelScopePathBuilder
-import com.daedan.di.path.AndroidScopes
 import com.daedan.di.path.Path
 import com.daedan.di.qualifier.ComplexQualifier
 import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
+import com.daedan.di.scope.AndroidScopes
 
 // --- Activity Scope ---
 fun ComponentActivity.activityScope(

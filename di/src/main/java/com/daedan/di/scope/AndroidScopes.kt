@@ -1,6 +1,4 @@
-package com.daedan.di.path
-
-import com.daedan.di.scope.Scope
+package com.daedan.di.scope
 
 sealed interface AndroidScopes {
     val scope: Scope

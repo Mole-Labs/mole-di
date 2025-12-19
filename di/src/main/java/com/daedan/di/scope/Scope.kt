@@ -1,19 +1,12 @@
 package com.daedan.di.scope
 
-import com.daedan.di.annotation.Component
-import com.daedan.di.annotation.Inject
 import com.daedan.di.module.DependencyModule
 import com.daedan.di.module.InstanceDependencyFactory
 import com.daedan.di.module.ScopeDependencyFactory
 import com.daedan.di.path.Path
 import com.daedan.di.qualifier.CreateRule
 import com.daedan.di.qualifier.Qualifier
-import com.daedan.di.util.getQualifier
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.reflect.KMutableProperty1
-import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.jvm.isAccessible
 
 class Scope(
     val qualifier: Qualifier,
@@ -100,63 +93,30 @@ class Scope(
 
         val creator = factory[qualifier] ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
 
-        // 성능 이점을 위하여 락의 범위를 세분화함에 따라 더블 체킹 로직을 수행합니다
         if (inProgress.contains(qualifier)) {
             error("$ERR_CIRCULAR_DEPENDENCY_DETECTED : $qualifier")
         }
 
         inProgress.add(qualifier)
         try {
-            return save(qualifier, creator) {
-                injectField(it)
-            }
+            return save(qualifier, creator)
         } finally {
             inProgress.remove(qualifier)
         }
     }
 
-    private fun injectField(instance: Any) {
-        try {
-            instance::class.memberProperties
-        } catch (e: Error) {
-            // 코틀린 리플렉션이 지원하지 않는 프레임워크 객체는 건너뜁니다
-            if (e::class.simpleName == "KotlinReflectionInternalError") return
-        }
-        instance::class
-            .memberProperties
-            .filterIsInstance<KMutableProperty1<Any, Any>>()
-            .filter { it.isTargetField() }
-            .forEach { property ->
-                val childQualifier = property.getQualifier()
-                property.isAccessible = true
-                property.set(
-                    instance,
-                    get(childQualifier),
-                )
-            }
-    }
-
-    private fun KMutableProperty1<*, *>.isTargetField(): Boolean =
-        findAnnotation<Inject>() != null ||
-            annotations.any {
-                it.annotationClass.findAnnotation<Component>() != null
-            }
-
     private fun save(
         qualifier: Qualifier,
         creator: InstanceDependencyFactory<*>,
-        onSaved: (Any) -> Unit,
     ): Any {
         val createRule =
             factory[qualifier]?.createRule ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
         return when (createRule) {
             CreateRule.SINGLE ->
-                cache.computeIfAbsent(qualifier) { _ ->
-                    creator().also { onSaved(it) }
-                }
+                cache.computeIfAbsent(qualifier) { _ -> creator() }
 
             CreateRule.FACTORY -> {
-                creator().also { onSaved(it) }
+                creator()
             }
         }
     }

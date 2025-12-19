@@ -13,10 +13,10 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.daedan.di.dsl.path.AbstractPathBuilder
-import com.daedan.di.path.AndroidScopes
 import com.daedan.di.path.Path
 import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
+import com.daedan.di.scope.AndroidScopes
 import com.daedan.di.scope.Scope
 
 @PublishedApi
