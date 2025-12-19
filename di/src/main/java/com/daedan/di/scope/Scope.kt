@@ -9,7 +9,7 @@ import com.daedan.di.path.Path
 import com.daedan.di.qualifier.CreateRule
 import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.util.getQualifier
-import java.util.Collections
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
@@ -19,10 +19,10 @@ class Scope(
     val qualifier: Qualifier,
     val parent: Scope? = null,
 ) {
-    private val cache = mutableMapOf<Qualifier, Any>()
+    private val cache = ConcurrentHashMap<Qualifier, Any>()
 
-    private val factory = mutableMapOf<Qualifier, InstanceDependencyFactory<*>>()
-    private val children = mutableMapOf<Qualifier, ScopeDependencyFactory>()
+    private val factory = ConcurrentHashMap<Qualifier, InstanceDependencyFactory<*>>()
+    private val children = ConcurrentHashMap<Qualifier, ScopeDependencyFactory>()
 
     fun declare(
         qualifier: Qualifier,
@@ -72,7 +72,7 @@ class Scope(
     }
 
     fun get(qualifier: Qualifier): Any {
-        val inProgress = Collections.synchronizedSet(mutableSetOf<Qualifier>())
+        val inProgress = ConcurrentHashMap.newKeySet<Qualifier>()
 
         return runCatching {
             get(qualifier, inProgress)
@@ -80,12 +80,9 @@ class Scope(
             ?: error("$ERR_CANNOT_FIND_INSTANCE : $qualifier")
     }
 
-    fun getSubScope(qualifier: Qualifier): Scope {
-        synchronized(this) {
-            return children[qualifier]?.invoke()
-                ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
-        }
-    }
+    fun getSubScope(qualifier: Qualifier): Scope =
+        children[qualifier]?.invoke()
+            ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
 
     fun resolvePath(path: Path): Scope {
         var current = this
@@ -99,27 +96,22 @@ class Scope(
         qualifier: Qualifier,
         inProgress: MutableSet<Qualifier>,
     ): Any {
-        if (cache.containsKey(qualifier)) {
-            return cache[qualifier] ?: error("$ERR_CANNOT_FIND_INSTANCE : $qualifier")
-        }
+        cache[qualifier]?.let { return it }
 
         val creator = factory[qualifier] ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
 
-        synchronized(this) {
-            // 성능 이점을 위하여 락의 범위를 세분화함에 따라 더블 체킹 로직을 수행합니다
-            if (inProgress.contains(qualifier)) {
-                error("$ERR_CIRCULAR_DEPENDENCY_DETECTED : $qualifier")
-            }
+        // 성능 이점을 위하여 락의 범위를 세분화함에 따라 더블 체킹 로직을 수행합니다
+        if (inProgress.contains(qualifier)) {
+            error("$ERR_CIRCULAR_DEPENDENCY_DETECTED : $qualifier")
+        }
 
-            inProgress.add(qualifier)
-            try {
-                val instance = creator.invoke()
-                injectField(instance)
-                save(qualifier, instance)
-                return instance
-            } finally {
-                inProgress.remove(qualifier)
+        inProgress.add(qualifier)
+        try {
+            return save(qualifier, creator) {
+                injectField(it)
             }
+        } finally {
+            inProgress.remove(qualifier)
         }
     }
 
@@ -152,13 +144,20 @@ class Scope(
 
     private fun save(
         qualifier: Qualifier,
-        instance: Any,
-    ) {
+        creator: InstanceDependencyFactory<*>,
+        onSaved: (Any) -> Unit,
+    ): Any {
         val createRule =
             factory[qualifier]?.createRule ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
-        when (createRule) {
-            CreateRule.SINGLE -> cache[qualifier] = instance
-            CreateRule.FACTORY -> Unit
+        return when (createRule) {
+            CreateRule.SINGLE ->
+                cache.computeIfAbsent(qualifier) { _ ->
+                    creator().also { onSaved(it) }
+                }
+
+            CreateRule.FACTORY -> {
+                creator().also { onSaved(it) }
+            }
         }
     }
 
