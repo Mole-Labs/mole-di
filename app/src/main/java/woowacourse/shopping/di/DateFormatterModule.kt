@@ -6,7 +6,9 @@ import woowacourse.shopping.ui.cart.DateFormatter
 
 fun dateFormatterModule(): ModuleDefinition =
     {
-        scope<CartActivity> {
-            single { DateFormatter(get()) }
+        activityRetainedScope<CartActivity> {
+            activityScope<CartActivity> {
+                single { DateFormatter(get()) }
+            }
         }
     }

@@ -8,7 +8,7 @@ import com.daedan.di.qualifier.TypeQualifier
 
 class ViewModelScopePathBuilder(
     override val path: Path,
-) : AbstractPathBuilder() {
+) : AbstractPathBuilder<ViewModelScopePathBuilder>() {
     inline fun <reified T : Any> activityRetainedScope(qualifier: Qualifier = TypeQualifier(T::class)) =
         ActivityRetainedScopeToken(
             ComplexQualifier(qualifier, AndroidScopeKeys.ACTIVITY_RETAINED),

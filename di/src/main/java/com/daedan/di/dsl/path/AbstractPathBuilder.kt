@@ -6,17 +6,19 @@ import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
 
 @ModuleBuilderDSL
-abstract class AbstractPathBuilder {
+abstract class AbstractPathBuilder<T : AbstractPathBuilder<T>> {
     @PublishedApi
     internal abstract val path: Path
 
-    val find: AbstractPathBuilder get() = this
+    @Suppress("UNCHECKED_CAST")
+    val find: T get() = this as T
 
     inline fun <reified T : Any> scope(qualifier: Qualifier = TypeQualifier(T::class)): Qualifier = qualifier
 
-    infix fun of(qualifier: Qualifier): AbstractPathBuilder {
+    @Suppress("UNCHECKED_CAST")
+    infix fun of(qualifier: Qualifier): T {
         path.append(qualifier)
-        return this
+        return this as T
     }
 
     infix fun of(root: Root): Path = path

@@ -16,10 +16,10 @@ fun repositoryModule(): ModuleDefinition =
                 get(),
             )
         }
-        scope<MainViewModel> {
-            viewModel { MainViewModel() }
+        viewModelScope<MainViewModel> {
             single<ProductRepository>(named("productRepository")) {
                 DefaultProductRepository()
             }
+            viewModel { MainViewModel() }
         }
     }
