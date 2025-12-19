@@ -1,5 +1,7 @@
 import java.net.URI
 
+include(":mole-di-core")
+
 pluginManagement {
     repositories {
         google {
@@ -22,5 +24,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "android-di"
-include(":app")
-include(":di")
+include(":example")
+include(":mole-di-android")
