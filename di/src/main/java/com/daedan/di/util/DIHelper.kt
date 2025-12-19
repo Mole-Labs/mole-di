@@ -1,18 +1,27 @@
 package com.daedan.di.util
 
-import android.content.Context
-import com.daedan.di.Scope
 import com.daedan.di.annotation.Component
 import com.daedan.di.annotation.Inject
 import com.daedan.di.qualifier.AnnotationQualifier
 import com.daedan.di.qualifier.NamedQualifier
 import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
-import kotlin.reflect.KAnnotatedElement // 💡 KClass와 KProperty 모두 상속
+import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.jvm.jvmErasure
+
+fun KClass<*>.getQualifier(): Qualifier = resolveQualifier(this)
+
+fun KMutableProperty1<*, *>.getQualifier(): Qualifier {
+    val defaultType = returnType.jvmErasure
+    return resolveQualifier(defaultType)
+}
+
+inline fun <reified T : Annotation> annotated(): AnnotationQualifier = AnnotationQualifier(T::class)
+
+fun named(name: String): NamedQualifier = NamedQualifier(name)
 
 /**
  * 어노테이션 정보를 기반으로 Qualifier를 결정하는 핵심 로직.
@@ -43,22 +52,4 @@ private fun KAnnotatedElement.resolveQualifier(defaultType: KClass<*>): Qualifie
         // 우선 순위 3: 아무것도 없는 경우
         else -> TypeQualifier(defaultType)
     }
-}
-
-fun KClass<*>.getQualifier(): Qualifier = resolveQualifier(this)
-
-fun KMutableProperty1<*, *>.getQualifier(): Qualifier {
-    val defaultType = returnType.jvmErasure
-    return resolveQualifier(defaultType)
-}
-
-inline fun <reified T : Annotation> annotated(): AnnotationQualifier = AnnotationQualifier(T::class)
-
-fun named(name: String): NamedQualifier = NamedQualifier(name)
-
-internal fun Context.registerCurrentContext(scope: Scope) {
-    scope.declare(
-        qualifier = TypeQualifier(Context::class),
-        instance = this,
-    )
 }

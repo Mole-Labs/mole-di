@@ -5,9 +5,9 @@ import com.daedan.di.annotation.Inject
 import com.daedan.di.module.DependencyModule
 import com.daedan.di.module.InstanceDependencyFactory
 import com.daedan.di.module.ScopeDependencyFactory
+import com.daedan.di.path.Path
 import com.daedan.di.qualifier.CreateRule
 import com.daedan.di.qualifier.Qualifier
-import com.daedan.di.qualifier.TypeQualifier
 import com.daedan.di.util.getQualifier
 import java.util.Collections
 import kotlin.reflect.KMutableProperty1
@@ -87,7 +87,13 @@ class Scope(
         }
     }
 
-    inline fun <reified T : Any> getSubScope(): Scope = getSubScope(TypeQualifier(T::class))
+    fun resolvePath(path: Path): Scope {
+        var current = this
+        for (qualifier in path.order) {
+            current = current.getSubScope(qualifier)
+        }
+        return current
+    }
 
     private fun get(
         qualifier: Qualifier,
