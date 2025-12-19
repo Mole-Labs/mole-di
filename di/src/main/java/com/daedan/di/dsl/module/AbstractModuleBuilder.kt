@@ -1,7 +1,6 @@
 package com.daedan.di.dsl.module
 
 import androidx.lifecycle.ViewModel
-import com.daedan.di.Scope
 import com.daedan.di.dsl.ModuleBuilderDSL
 import com.daedan.di.module.DependencyFactory
 import com.daedan.di.module.DependencyModule
@@ -10,6 +9,7 @@ import com.daedan.di.module.ScopeDependencyFactory
 import com.daedan.di.qualifier.CreateRule
 import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
+import com.daedan.di.scope.Scope
 
 @ModuleBuilderDSL
 abstract class AbstractModuleBuilder {

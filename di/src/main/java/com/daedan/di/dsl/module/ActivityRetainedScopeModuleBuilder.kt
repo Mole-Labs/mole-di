@@ -2,12 +2,12 @@ package com.daedan.di.dsl.module
 
 import android.app.Activity
 import androidx.lifecycle.ViewModel
-import com.daedan.di.Scope
 import com.daedan.di.dsl.AndroidScopeKeys
 import com.daedan.di.dsl.ModuleBuilderDSL
 import com.daedan.di.qualifier.ComplexQualifier
 import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
+import com.daedan.di.scope.Scope
 
 @ModuleBuilderDSL
 class ActivityRetainedScopeModuleBuilder(

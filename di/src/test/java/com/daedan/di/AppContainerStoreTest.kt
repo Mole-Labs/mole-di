@@ -20,6 +20,7 @@ import com.daedan.di.fixture.TestComponent2
 import com.daedan.di.fixture.UnableReflectObject
 import com.daedan.di.module.combine
 import com.daedan.di.qualifier.TypeQualifier
+import com.daedan.di.scope.Scope
 import com.daedan.di.util.annotated
 import com.daedan.di.util.named
 import org.assertj.core.api.Assertions.assertThat

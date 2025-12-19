@@ -2,7 +2,7 @@ package com.daedan.di.fixture
 
 import android.app.Application
 import com.daedan.di.DiComponent
-import com.daedan.di.Scope
+import com.daedan.di.scope.Scope
 
 class FakeApplication :
     Application(),

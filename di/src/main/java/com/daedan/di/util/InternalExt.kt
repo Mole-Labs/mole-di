@@ -6,25 +6,39 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelLazy
 import androidx.lifecycle.ViewModelProvider
-import com.daedan.di.Scope
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.daedan.di.dsl.path.AbstractPathBuilder
+import com.daedan.di.path.AndroidScopes
 import com.daedan.di.path.Path
 import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
+import com.daedan.di.scope.Scope
 
 @PublishedApi
-internal inline fun <reified B : AbstractPathBuilder<B>> ComponentActivity.createScopeLazy(
+@Suppress("UNCHECKED_CAST")
+internal inline fun <reified B : AbstractPathBuilder<B>, reified SCOPE : AndroidScopes> ComponentActivity.createScopeLazy(
     initialQualifier: Qualifier,
     noinline builderFactory: (Path) -> B,
     noinline pathBuilder: B.() -> Path,
     crossinline onResolved: (Scope) -> Unit = {},
-): Lazy<Scope> =
+): Lazy<SCOPE> =
     lazy {
         val path = builderFactory(Path(initialQualifier)).pathBuilder()
-        getRootScope().resolvePath(path).also {
-            onResolved(it)
-        }
+        val scope =
+            getRootScope().resolvePath(path).also {
+                onResolved(it)
+            }
+        when (SCOPE::class) {
+            AndroidScopes.ActivityScope::class -> AndroidScopes.ActivityScope(scope)
+            AndroidScopes.ViewModelScope::class -> AndroidScopes.ViewModelScope(scope)
+            AndroidScopes.ActivityRetainedScope::class -> AndroidScopes.ActivityRetainedScope(scope)
+            else -> error("올바르지 않은 Android Scope 입니다.")
+        } as SCOPE
     }
 
 @MainThread
@@ -56,5 +70,31 @@ internal fun Context.registerCurrentContext(scope: Scope) {
     scope.declare(
         qualifier = TypeQualifier(Context::class),
         instance = this,
+    )
+}
+
+@MainThread
+@PublishedApi
+internal inline fun <reified VM : ViewModel> ComponentActivity.autoViewModels(
+    qualifier: Qualifier = TypeQualifier(VM::class),
+    scope: Lazy<Scope>,
+    addCloseFlag: Boolean,
+    noinline extrasProducer: (() -> CreationExtras)? = null,
+): Lazy<VM> {
+    val factory =
+        viewModelFactory {
+            initializer {
+                val viewModel = scope.value.get(qualifier) as VM
+                if (addCloseFlag) {
+                    viewModel.addCloseable { scope.value.closeAll() }
+                }
+                viewModel
+            }
+        }
+    return ViewModelLazy(
+        VM::class,
+        { viewModelStore },
+        { factory },
+        { extrasProducer?.invoke() ?: this.defaultViewModelCreationExtras },
     )
 }

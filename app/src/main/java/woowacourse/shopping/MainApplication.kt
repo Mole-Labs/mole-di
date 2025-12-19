@@ -2,8 +2,8 @@ package woowacourse.shopping
 
 import android.app.Application
 import com.daedan.di.DiComponent
-import com.daedan.di.Scope
 import com.daedan.di.qualifier.RootScopeQualifier
+import com.daedan.di.scope.Scope
 import woowacourse.shopping.di.dataModule
 import woowacourse.shopping.di.dateFormatterModule
 import woowacourse.shopping.di.repositoryModule

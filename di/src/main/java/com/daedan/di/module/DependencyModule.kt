@@ -1,7 +1,7 @@
 package com.daedan.di.module
 
-import com.daedan.di.Scope
 import com.daedan.di.dsl.module.DependencyModuleBuilder
+import com.daedan.di.scope.Scope
 
 typealias ModuleDefinition = DependencyModuleBuilder.() -> Unit
 

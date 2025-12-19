@@ -1,10 +1,11 @@
 package com.daedan.di.util
 
-import com.daedan.di.Scope
 import com.daedan.di.dsl.path.ScopePathBuilder
+import com.daedan.di.path.AndroidScopes
 import com.daedan.di.path.Path
 import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
+import com.daedan.di.scope.Scope
 
 fun Scope.subScope(pathBuilder: ScopePathBuilder.() -> Path): Scope {
     val path = pathBuilder(ScopePathBuilder(Path()))
@@ -42,3 +43,16 @@ inline fun <reified T> Lazy<Scope>.inject(
     mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
     noinline pathBuilder: ScopePathBuilder.() -> Path,
 ): Lazy<T> = lazy(mode) { value.get(qualifier, pathBuilder) as T }
+
+@JvmName("injectAndroidScope")
+inline fun <reified T> Lazy<AndroidScopes>.inject(
+    qualifier: Qualifier = TypeQualifier(T::class),
+    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+): Lazy<T> = lazy(mode) { value.scope.get(qualifier) as T }
+
+@JvmName("injectAndroidScope")
+inline fun <reified T> Lazy<AndroidScopes>.inject(
+    qualifier: Qualifier = TypeQualifier(T::class),
+    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+    noinline pathBuilder: ScopePathBuilder.() -> Path,
+): Lazy<T> = lazy(mode) { value.scope.get(qualifier, pathBuilder) as T }

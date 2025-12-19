@@ -5,19 +5,21 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
 import com.daedan.di.DiComponent
-import com.daedan.di.Scope
 import com.daedan.di.dsl.AndroidScopeKeys
 import com.daedan.di.dsl.path.ActivityRetainedScopePathBuilder
 import com.daedan.di.dsl.path.ActivityScopePathBuilder
 import com.daedan.di.dsl.path.Root
 import com.daedan.di.dsl.path.ViewModelScopePathBuilder
+import com.daedan.di.path.AndroidScopes
 import com.daedan.di.path.Path
 import com.daedan.di.qualifier.ComplexQualifier
 import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
 
 // --- Activity Scope ---
-fun ComponentActivity.activityScope(pathBuilder: ActivityScopePathBuilder.() -> Path = { find of Root }): Lazy<Scope> =
+fun ComponentActivity.activityScope(
+    pathBuilder: ActivityScopePathBuilder.() -> Path = { find of Root },
+): Lazy<AndroidScopes.ActivityScope> =
     createScopeLazy(
         initialQualifier = ComplexQualifier(TypeQualifier(this::class), AndroidScopeKeys.ACTIVITY),
         builderFactory = ::ActivityScopePathBuilder,
@@ -28,12 +30,12 @@ fun ComponentActivity.activityScope(pathBuilder: ActivityScopePathBuilder.() -> 
 @JvmName("inlineActivityScope")
 inline fun <reified T : Activity> ComponentActivity.activityScope(
     noinline pathBuilder: ActivityScopePathBuilder.() -> Path = { find of Root },
-): Lazy<Scope> = activityScope(pathBuilder)
+): Lazy<AndroidScopes.ActivityScope> = activityScope(pathBuilder)
 
 // --- ViewModel Scope ---
 inline fun <reified T : ViewModel> ComponentActivity.viewModelScope(
     noinline pathBuilder: ViewModelScopePathBuilder.() -> Path = { find of Root },
-): Lazy<Scope> =
+): Lazy<AndroidScopes.ViewModelScope> =
     createScopeLazy(
         initialQualifier = ComplexQualifier(TypeQualifier(T::class), AndroidScopeKeys.VIEWMODEL),
         builderFactory = ::ViewModelScopePathBuilder,
@@ -41,7 +43,9 @@ inline fun <reified T : ViewModel> ComponentActivity.viewModelScope(
     )
 
 // --- Activity Retained Scope ---
-fun ComponentActivity.activityRetainedScope(pathBuilder: ActivityRetainedScopePathBuilder.() -> Path = { find of Root }): Lazy<Scope> =
+fun ComponentActivity.activityRetainedScope(
+    pathBuilder: ActivityRetainedScopePathBuilder.() -> Path = { find of Root },
+): Lazy<AndroidScopes.ActivityRetainedScope> =
     createScopeLazy(
         initialQualifier =
             ComplexQualifier(
@@ -56,7 +60,7 @@ fun ComponentActivity.activityRetainedScope(pathBuilder: ActivityRetainedScopePa
 @JvmName("inlineActivityRetainedScope")
 inline fun <reified T : Activity> ComponentActivity.activityRetainedScope(
     noinline pathBuilder: ActivityRetainedScopePathBuilder.() -> Path = { find of Root },
-): Lazy<Scope> = activityRetainedScope(pathBuilder)
+): Lazy<AndroidScopes.ActivityRetainedScope> = activityRetainedScope(pathBuilder)
 
 @MainThread
 fun ComponentActivity.getRootScope() = (applicationContext as? DiComponent)?.rootScope ?: error("DiComponent의 하위 타입이 아닙니다. ")

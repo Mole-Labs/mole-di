@@ -1,8 +1,8 @@
 package com.daedan.di.module
 
-import com.daedan.di.Scope
 import com.daedan.di.qualifier.CreateRule
 import com.daedan.di.qualifier.Qualifier
+import com.daedan.di.scope.Scope
 
 class ScopeDependencyFactory(
     override val qualifier: Qualifier,

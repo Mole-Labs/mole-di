@@ -1,4 +1,4 @@
-package com.daedan.di
+package com.daedan.di.scope
 
 import com.daedan.di.annotation.Component
 import com.daedan.di.annotation.Inject

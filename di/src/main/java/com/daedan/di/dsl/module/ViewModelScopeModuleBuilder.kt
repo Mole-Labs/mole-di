@@ -1,11 +1,11 @@
 package com.daedan.di.dsl.module
 
 import android.app.Activity
-import com.daedan.di.Scope
 import com.daedan.di.dsl.AndroidScopeKeys
 import com.daedan.di.qualifier.ComplexQualifier
 import com.daedan.di.qualifier.Qualifier
 import com.daedan.di.qualifier.TypeQualifier
+import com.daedan.di.scope.Scope
 
 class ViewModelScopeModuleBuilder(
     override val scope: Scope,
