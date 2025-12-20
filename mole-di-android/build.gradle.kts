@@ -44,7 +44,7 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":mole-di-core"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.google.material)

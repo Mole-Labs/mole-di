@@ -1,6 +1,6 @@
 package com.mole.android.dsl.path
 
-import com.mole.android.qualifier.ComplexQualifier
+import com.mole.core.qualifier.ComplexQualifier
 
 @JvmInline
 value class ViewModelScopeToken(

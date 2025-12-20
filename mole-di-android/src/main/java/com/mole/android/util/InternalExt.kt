@@ -12,12 +12,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.mole.android.dsl.path.AbstractPathBuilder
-import com.mole.android.path.Path
-import com.mole.android.qualifier.Qualifier
-import com.mole.android.qualifier.TypeQualifier
 import com.mole.android.scope.AndroidScopes
-import com.mole.android.scope.Scope
+import com.mole.core.dsl.AbstractPathBuilder
+import com.mole.core.path.Path
+import com.mole.core.qualifier.Qualifier
+import com.mole.core.qualifier.TypeQualifier
+import com.mole.core.scope.Scope
 
 @PublishedApi
 @Suppress("UNCHECKED_CAST")

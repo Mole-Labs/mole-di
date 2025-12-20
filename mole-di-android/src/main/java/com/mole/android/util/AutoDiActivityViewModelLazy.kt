@@ -4,8 +4,8 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.mole.android.qualifier.TypeQualifier
 import com.mole.android.scope.AndroidScopes
+import com.mole.core.qualifier.TypeQualifier
 
 @MainThread
 inline fun <reified VM : ViewModel> ComponentActivity.autoViewModels(

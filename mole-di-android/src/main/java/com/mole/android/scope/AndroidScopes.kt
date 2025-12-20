@@ -1,5 +1,7 @@
 package com.mole.android.scope
 
+import com.mole.core.scope.Scope
+
 sealed interface AndroidScopes {
     val scope: Scope
 

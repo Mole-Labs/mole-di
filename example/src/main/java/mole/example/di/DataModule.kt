@@ -2,7 +2,7 @@ package mole.example.di
 
 import android.content.Context
 import androidx.room.Room
-import com.mole.android.module.ModuleDefinition
+import com.mole.core.module.ModuleDefinition
 import mole.example.data.ShoppingDatabase
 
 fun dataModule(applicationContext: Context): ModuleDefinition =

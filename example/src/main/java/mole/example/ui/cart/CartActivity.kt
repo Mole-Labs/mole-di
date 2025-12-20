@@ -6,10 +6,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.mole.android.dsl.path.Root
 import com.mole.android.scope.inject
 import com.mole.android.util.activityScope
 import com.mole.android.util.autoViewModels
+import com.mole.core.dsl.Root
 import mole.example.R
 import mole.example.databinding.ActivityCartBinding
 

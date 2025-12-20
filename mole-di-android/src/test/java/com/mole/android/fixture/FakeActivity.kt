@@ -2,7 +2,6 @@ package com.mole.android.fixture
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import com.mole.android.DiComponent
 import com.mole.android.scope.inject
 import com.mole.android.util.activityRetainedScope
 import com.mole.android.util.autoViewModels

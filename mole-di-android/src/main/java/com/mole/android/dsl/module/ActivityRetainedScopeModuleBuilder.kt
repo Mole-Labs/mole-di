@@ -3,13 +3,16 @@ package com.mole.android.dsl.module
 import android.app.Activity
 import androidx.lifecycle.ViewModel
 import com.mole.android.dsl.AndroidScopeKeys
-import com.mole.android.dsl.ModuleBuilderDSL
-import com.mole.android.qualifier.ComplexQualifier
-import com.mole.android.qualifier.Qualifier
-import com.mole.android.qualifier.TypeQualifier
-import com.mole.android.scope.Scope
+import com.mole.core.annotation.MoleInternalApi
+import com.mole.core.dsl.AbstractModuleBuilder
+import com.mole.core.dsl.ModuleBuilderDSL
+import com.mole.core.qualifier.ComplexQualifier
+import com.mole.core.qualifier.Qualifier
+import com.mole.core.qualifier.TypeQualifier
+import com.mole.core.scope.Scope
 
 @ModuleBuilderDSL
+@OptIn(MoleInternalApi::class)
 class ActivityRetainedScopeModuleBuilder(
     override val scope: Scope,
 ) : AbstractModuleBuilder() {

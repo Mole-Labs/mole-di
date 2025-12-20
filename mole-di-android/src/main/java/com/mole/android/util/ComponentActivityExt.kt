@@ -4,17 +4,17 @@ import android.app.Activity
 import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
-import com.mole.android.DiComponent
 import com.mole.android.dsl.AndroidScopeKeys
 import com.mole.android.dsl.path.ActivityRetainedScopePathBuilder
 import com.mole.android.dsl.path.ActivityScopePathBuilder
-import com.mole.android.dsl.path.Root
 import com.mole.android.dsl.path.ViewModelScopePathBuilder
-import com.mole.android.path.Path
-import com.mole.android.qualifier.ComplexQualifier
-import com.mole.android.qualifier.Qualifier
-import com.mole.android.qualifier.TypeQualifier
 import com.mole.android.scope.AndroidScopes
+import com.mole.core.DiComponent
+import com.mole.core.dsl.Root
+import com.mole.core.path.Path
+import com.mole.core.qualifier.ComplexQualifier
+import com.mole.core.qualifier.Qualifier
+import com.mole.core.qualifier.TypeQualifier
 
 // --- Activity Scope ---
 fun ComponentActivity.activityScope(

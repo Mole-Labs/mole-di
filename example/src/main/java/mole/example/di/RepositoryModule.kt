@@ -1,8 +1,10 @@
 package mole.example.di
 
-import com.mole.android.module.ModuleDefinition
-import com.mole.android.qualifier.annotated
-import com.mole.android.qualifier.named
+import com.mole.android.dsl.module.viewModel
+import com.mole.android.dsl.module.viewModelScope
+import com.mole.core.module.ModuleDefinition
+import com.mole.core.qualifier.annotated
+import com.mole.core.qualifier.named
 import mole.example.data.repository.DefaultCartRepository
 import mole.example.data.repository.DefaultProductRepository
 import mole.example.domain.repository.CartRepository

@@ -1,9 +1,9 @@
 package mole.example
 
 import android.app.Application
-import com.mole.android.DiComponent
-import com.mole.android.qualifier.RootScopeQualifier
-import com.mole.android.scope.Scope
+import com.mole.core.DiComponent
+import com.mole.core.qualifier.RootScopeQualifier
+import com.mole.core.scope.Scope
 import mole.example.di.dataModule
 import mole.example.di.dateFormatterModule
 import mole.example.di.repositoryModule

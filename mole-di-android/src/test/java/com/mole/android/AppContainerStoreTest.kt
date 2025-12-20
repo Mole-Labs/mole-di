@@ -22,7 +22,6 @@ import com.mole.android.module.combine
 import com.mole.android.qualifier.TypeQualifier
 import com.mole.android.qualifier.annotated
 import com.mole.android.qualifier.named
-import com.mole.android.scope.Scope
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatCode
 import org.assertj.core.api.Assertions.assertThatThrownBy

@@ -1,6 +1,7 @@
 package mole.example.di
 
-import com.mole.android.module.ModuleDefinition
+import com.mole.android.dsl.module.activityRetainedScope
+import com.mole.core.module.ModuleDefinition
 import mole.example.ui.cart.CartActivity
 import mole.example.ui.cart.DateFormatter
 

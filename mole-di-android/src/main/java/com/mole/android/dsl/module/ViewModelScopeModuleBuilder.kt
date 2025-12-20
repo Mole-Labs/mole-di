@@ -2,11 +2,14 @@ package com.mole.android.dsl.module
 
 import android.app.Activity
 import com.mole.android.dsl.AndroidScopeKeys
-import com.mole.android.qualifier.ComplexQualifier
-import com.mole.android.qualifier.Qualifier
-import com.mole.android.qualifier.TypeQualifier
-import com.mole.android.scope.Scope
+import com.mole.core.annotation.MoleInternalApi
+import com.mole.core.dsl.AbstractModuleBuilder
+import com.mole.core.qualifier.ComplexQualifier
+import com.mole.core.qualifier.Qualifier
+import com.mole.core.qualifier.TypeQualifier
+import com.mole.core.scope.Scope
 
+@OptIn(MoleInternalApi::class)
 class ViewModelScopeModuleBuilder(
     override val scope: Scope,
 ) : AbstractModuleBuilder() {
