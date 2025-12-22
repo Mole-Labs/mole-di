@@ -14,6 +14,8 @@ class Scope(
 ) {
     private val cache = ConcurrentHashMap<Qualifier, Any>()
 
+    private val inProgress = ThreadLocal.withInitial { mutableSetOf<Qualifier>() }
+
     private val factory = ConcurrentHashMap<Qualifier, InstanceDependencyFactory<*>>()
     private val children = ConcurrentHashMap<Qualifier, ScopeDependencyFactory>()
 
@@ -64,15 +66,6 @@ class Scope(
         cache.clear()
     }
 
-    fun get(qualifier: Qualifier): Any {
-        val inProgress = ConcurrentHashMap.newKeySet<Qualifier>()
-
-        return runCatching {
-            get(qualifier, inProgress)
-        }.getOrNull() ?: parent?.get(qualifier, inProgress)
-            ?: error("$ERR_CANNOT_FIND_INSTANCE : $qualifier")
-    }
-
     fun getSubScope(qualifier: Qualifier): Scope =
         children[qualifier]?.invoke()
             ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
@@ -85,23 +78,21 @@ class Scope(
         return current
     }
 
-    private fun get(
-        qualifier: Qualifier,
-        inProgress: MutableSet<Qualifier>,
-    ): Any {
+    fun get(qualifier: Qualifier): Any {
         cache[qualifier]?.let { return it }
-
-        val creator = factory[qualifier] ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
-
-        if (inProgress.contains(qualifier)) {
+        if (inProgress.get().contains(qualifier)) {
             error("$ERR_CIRCULAR_DEPENDENCY_DETECTED : $qualifier")
         }
 
-        inProgress.add(qualifier)
+        inProgress.get().add(qualifier)
+        val creator =
+            factory[qualifier] ?: return parent?.get(qualifier)
+                ?: error("$ERR_CANNOT_FIND_INSTANCE : $qualifier")
+
         try {
             return save(qualifier, creator)
         } finally {
-            inProgress.remove(qualifier)
+            inProgress.get().remove(qualifier)
         }
     }
 

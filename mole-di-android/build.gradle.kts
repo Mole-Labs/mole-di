@@ -48,13 +48,10 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.google.material)
-
-    // Reflection
     implementation(libs.core.ktx)
     testImplementation(libs.junit)
     testImplementation(libs.assertj.core)
     testImplementation(libs.robolectric)
-    androidTestImplementation(libs.androidx.espresso.core)
 }
 afterEvaluate {
     publishing {
