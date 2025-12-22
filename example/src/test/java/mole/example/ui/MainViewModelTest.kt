@@ -1,12 +1,13 @@
 package mole.example.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.mole.android.AppContainerStore
-import com.mole.android.module.combine
-import com.mole.android.qualifier.NamedQualifier
-import com.mole.android.qualifier.annotated
-import com.mole.android.qualifier.named
-import com.mole.android.util.getQualifier
+import com.mole.android.dsl.module.viewModel
+import com.mole.core.module.combine
+import com.mole.core.qualifier.NamedQualifier
+import com.mole.core.qualifier.annotated
+import com.mole.core.qualifier.named
+import com.mole.core.scope.Scope
+import com.mole.core.scope.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -36,35 +37,41 @@ class MainViewModelTest {
 
     @Before
     fun setup() {
-        val appContainerStore = AppContainerStore()
-        val module =
-            combine(appContainerStore) {
-                single<ProductRepository>(named("productRepository")) {
-                    FakeProductRepository(
-                        fakeAllProducts =
-                            listOf(
-                                PRODUCT1,
-                            ),
-                    )
-                }
-
-                single<CartRepository>(annotated<RoomDBCartRepository>()) {
-                    FakeCartRepository(
-                        fakeAllCartProducts =
-                            listOf(
-                                PRODUCT1,
-                            ),
-                    )
-                }
-
-                viewModel { MainViewModel() }
+        val scope =
+            Scope(
+                NamedQualifier("MainViewModelTest"),
+            )
+        combine(scope) {
+            single<ProductRepository>(named("productRepository")) {
+                FakeProductRepository(
+                    fakeAllProducts =
+                        listOf(
+                            PRODUCT1,
+                        ),
+                )
             }
-        appContainerStore.registerFactory(module)
+
+            single<CartRepository>(annotated<RoomDBCartRepository>()) {
+                FakeCartRepository(
+                    fakeAllCartProducts =
+                        listOf(
+                            PRODUCT1,
+                        ),
+                )
+            }
+
+            viewModel {
+                MainViewModel(
+                    get(named("productRepository")),
+                    get(annotated<RoomDBCartRepository>()),
+                )
+            }
+        }
 
         productRepository =
-            appContainerStore.instantiate(NamedQualifier("productRepository")) as ProductRepository
+            scope.get(named("productRepository")) as ProductRepository
         viewModel =
-            appContainerStore.instantiate(MainViewModel::class.getQualifier()) as MainViewModel
+            scope.get<MainViewModel>() as MainViewModel
         Dispatchers.setMain(StandardTestDispatcher())
     }
 

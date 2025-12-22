@@ -17,7 +17,7 @@ fun Scope.subScope(pathBuilder: ScopePathBuilder.() -> Path): Scope {
 @JvmName("inlineGet")
 inline fun <reified T : Any> Scope.get(
     qualifier: Qualifier = TypeQualifier(T::class),
-    noinline pathBuilder: ScopePathBuilder.() -> Path,
+    noinline pathBuilder: ScopePathBuilder.() -> Path = { Path() },
 ): Any {
     val scope = subScope(pathBuilder)
     return scope.get(qualifier)
