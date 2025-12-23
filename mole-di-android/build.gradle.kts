@@ -53,18 +53,22 @@ dependencies {
     testImplementation(libs.assertj.core)
     testImplementation(libs.robolectric)
 }
+
 afterEvaluate {
     publishing {
         publications {
             register<MavenPublication>("release") {
                 from(components["release"])
                 groupId = "com.github.oungsi2000"
-                artifactId = "android-di"
-                version = "beta-1.0.0"
+                artifactId = "mole-di-android"
+                version = "1.0.0"
 
                 pom {
-                    name.set("DI")
-                    description.set("simple android runtime DI framework based on Kotlin Reflection")
+                    name.set("Mole-DI")
+                    description.set(
+                        "Simple & fast android runtime DI framework, " +
+                            "Supports lexical scope, with android-friendly Extensions and Scopes",
+                    )
                 }
             }
         }

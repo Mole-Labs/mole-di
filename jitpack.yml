@@ -1,3 +1,6 @@
 jdk:
   - openjdk17
-install: ./gradlew :di:publishToMavenLocal
+install:
+  - ./gradlew :mole-di-android:publishToMavenLocal
+  - ./gradlew :mole-di-core:publishToMavenLocal
+
