@@ -12,7 +12,7 @@ import kotlin.concurrent.thread
 
 class ScopeTest {
     @Test
-    fun `get는 등록된 팩토리를 통해 객체를 생성해야 한다`() {
+    fun `get should create an object through a registered factory`() {
         // given
         val scope = ScopeImpl(testQualifier)
         val qualifier = TypeQualifier(Parent::class)
@@ -28,7 +28,7 @@ class ScopeTest {
     }
 
     @Test
-    fun `중첩 의존성 체인을 성공적으로 해결하고 주입해야 한다`() {
+    fun `should successfully resolve and inject a nested dependency chain`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {
@@ -49,7 +49,7 @@ class ScopeTest {
     }
 
     @Test
-    fun `factory로 등록한 의존성은 매번 다른 인스턴스를 생성한다`() {
+    fun `a dependency registered as a factory creates a different instance each time`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {
@@ -65,7 +65,7 @@ class ScopeTest {
     }
 
     @Test
-    fun `single로 등록한 의존성은 동일 인스턴스를 반환한다`() {
+    fun `a dependency registered as a single returns the same instance`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {
@@ -89,7 +89,7 @@ class ScopeTest {
     }
 
     @Test
-    fun `순환 참조가 발생하면 예외를 던진다`() {
+    fun `throws an exception when a circular dependency occurs`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {
@@ -102,11 +102,11 @@ class ScopeTest {
             scope.get(
                 TypeQualifier(CircularDependency1::class),
             )
-        }.message().contains("순환 참조가 발견되었습니다")
+        }.message().contains("Circular dependency detected")
     }
 
     @Test
-    fun `멀티 스레드 환경에서 순환 참조가 발생해도 예외를 던진다`() {
+    fun `throws an exception even if a circular dependency occurs in a multi-threaded environment`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {
@@ -132,11 +132,11 @@ class ScopeTest {
 
             t1.join()
             t2.join()
-        }.message().contains("순환 참조가 발견되었습니다")
+        }.message().contains("Circular dependency detected")
     }
 
     @Test
-    fun `필수 의존성을 해결할 수 없으면 예외를 던진다`() {
+    fun `throws an exception if a required dependency cannot be resolved`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {
@@ -148,11 +148,11 @@ class ScopeTest {
             scope.get(
                 TypeQualifier(Parent::class),
             )
-        }.message().contains("컨테이너에서 인스턴스를 찾을 수 없습니다")
+        }.message().contains("Cannot find instance in container")
     }
 
     @Test
-    fun `같은 타입을 네이밍으로 구분하여 생성자 주입을 수행할 수 있다`() {
+    fun `can perform constructor injection by distinguishing the same type by naming`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {
@@ -170,7 +170,7 @@ class ScopeTest {
     }
 
     @Test
-    fun `같은 타입을 어노테이션으로 구분하여 생성자 주입을 수행할 수 있다`() {
+    fun `can perform constructor injection by distinguishing the same type by annotation`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {
@@ -193,7 +193,7 @@ class ScopeTest {
     }
 
     @Test
-    fun `동시에 같은 스레드에서 요청해도 한 번만 객체가 생성된다`() {
+    fun `even if requested from the same thread at the same time, the object is created only once`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {

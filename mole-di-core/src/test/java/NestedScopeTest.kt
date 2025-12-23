@@ -8,7 +8,7 @@ import org.junit.Test
 
 class NestedScopeTest {
     @Test
-    fun `scope를 통해 등록한 스코프의 인스턴스를 가져올 수 있다`() {
+    fun `can get an instance of a scope registered through scope`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {
@@ -31,7 +31,7 @@ class NestedScopeTest {
     }
 
     @Test
-    fun `중첩해서 scope를 적용할 수 있다`() {
+    fun `can apply nested scopes`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {
@@ -62,7 +62,7 @@ class NestedScopeTest {
     }
 
     @Test
-    fun `한 스코프에서 다른 스코프에 등록된 의존성을 찾을 수 없다`() {
+    fun `cannot find a dependency registered in another scope from one scope`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {
@@ -87,11 +87,11 @@ class NestedScopeTest {
                 .get(
                     TypeQualifier(NestedDependency::class),
                 )
-        }.message().contains("컨테이너에서 인스턴스를 찾을 수 없습니다")
+        }.message().contains("Cannot find instance in container")
     }
 
     @Test
-    fun `한 스코프에서 부모 스코프에 등록된 의존성을 찾을 수 있다`() {
+    fun `can find a dependency registered in a parent scope from one scope`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {
@@ -119,7 +119,7 @@ class NestedScopeTest {
     }
 
     @Test
-    fun `Path를 통해 스코프를 찾을 수 있다`() {
+    fun `can find a scope through Path`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {
@@ -147,7 +147,7 @@ class NestedScopeTest {
     }
 
     @Test
-    fun `자식 스코프에 동일한 타입이 있으면 부모보다 우선한다`() {
+    fun `if a child scope has the same type, it takes precedence over the parent`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {
@@ -168,7 +168,7 @@ class NestedScopeTest {
     }
 
     @Test
-    fun `부모 스코프가 close되면 자식 스코프에서 부모의 의존성을 조회할 수 없다`() {
+    fun `if the parent scope is closed, the child scope cannot resolve the parent's dependencies`() {
         // given
         val rootScope = ScopeImpl(testQualifier)
         combine(rootScope) {
@@ -186,6 +186,6 @@ class NestedScopeTest {
         // then
         assertThatThrownBy {
             childScope.get(TypeQualifier(NestedDependency::class))
-        }.hasMessageContaining("컨테이너에서 인스턴스를 찾을 수 없습니다")
+        }.hasMessageContaining("Cannot find instance in container")
     }
 }

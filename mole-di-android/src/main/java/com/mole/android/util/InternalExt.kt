@@ -38,7 +38,7 @@ internal inline fun <reified B : AbstractPathBuilder<B>, reified SCOPE : Android
             AndroidScopes.ActivityScope::class -> AndroidScopes.ActivityScope(scope)
             AndroidScopes.ViewModelScope::class -> AndroidScopes.ViewModelScope(scope)
             AndroidScopes.ActivityRetainedScope::class -> AndroidScopes.ActivityRetainedScope(scope)
-            else -> error("올바르지 않은 Android Scope 입니다.")
+            else -> error("Invalid Android Scope.")
         } as SCOPE
     }
 
@@ -81,7 +81,7 @@ internal inline fun <reified VM : ViewModel> ComponentActivity.autoViewModels(
                 val viewModel = scope.get(qualifier) as VM
                 if (scope is AndroidScopes.ViewModelScope) {
                     (viewModel as? ScopeComponent<AndroidScopes.ViewModelScope>)?.injectScope(lazy { scope })
-                        ?: error("${VM::class.java}가 ScopeComponent의 하위 타입이 아닙니다. ")
+                        ?: error("${VM::class.java} is not a subtype of ScopeComponent.")
                     viewModel.addCloseable { scope.closeAll() }
                 }
                 viewModel

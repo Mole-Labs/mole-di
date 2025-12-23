@@ -15,7 +15,7 @@ class CartActivityTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Test
-    fun `Activity 실행 테스트`() {
+    fun `Activity startup test`() {
         // given
         val activity =
             Robolectric
@@ -28,7 +28,7 @@ class CartActivityTest {
     }
 
     @Test
-    fun `ViewModel 주입 테스트`() {
+    fun `ViewModel injection test`() {
         // given
         val activity =
             Robolectric

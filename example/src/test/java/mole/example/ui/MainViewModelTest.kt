@@ -81,7 +81,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun `상품을 추가할 수 있다`() =
+    fun `can add a product`() =
         runTest {
             // given
             val product = PRODUCT1
@@ -96,7 +96,7 @@ class MainViewModelTest {
         }
 
     @Test
-    fun `모든 상품을 조회할 수 있다`() {
+    fun `can retrieve all products`() {
         // given
         val expected = productRepository.getAllProducts()
 

@@ -20,7 +20,7 @@ class CartRepositoryTest {
     }
 
     @Test
-    fun `상품을 삭제할 수 있다`() =
+    fun `can delete a product`() =
         runTest {
             // given
             cartRepository.addCartProduct(PRODUCT1)
@@ -36,7 +36,7 @@ class CartRepositoryTest {
         }
 
     @Test
-    fun `상품을 추가할 수 있다`() =
+    fun `can add a product`() =
         runTest {
             // given
             val product = PRODUCT1
@@ -50,12 +50,12 @@ class CartRepositoryTest {
         }
 
     @Test
-    fun `상품을 조회할 수 있다`() =
+    fun `can retrieve products`() =
         runTest {
             // given
             val product = PRODUCT1
             cartRepository.addCartProduct(product)
-            val expected = listOf("상품명")
+            val expected = listOf("Product Name")
 
             // when
             cartRepository.getAllCartProducts()

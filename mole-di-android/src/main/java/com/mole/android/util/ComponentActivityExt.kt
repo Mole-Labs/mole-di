@@ -27,7 +27,7 @@ fun ComponentActivity.activityScope(
 ): Lazy<AndroidScopes.ActivityScope> =
     lazy {
         this as? ScopeComponent<AndroidScopes.ActivityScope>
-            ?: error("${this::class.java}가 ScopeComponent의 하위 타입이 아닙니다. ")
+            ?: error("${this::class.java} is not a subtype of ScopeComponent. ")
         val scope =
             createScopeLazy<ActivityScopePathBuilder, AndroidScopes.ActivityScope>(
                 initialQualifier =
@@ -70,12 +70,12 @@ inline fun <reified T : ViewModel> ComponentActivity.viewModelScope(
                 pathBuilder = pathBuilder,
             )
 
-        // viewModel에 연결된 스코프가 있으면 연결된 스코프 반환,
-        // 아직 뷰모델 생성 전이면 독립적인 스코프 인스턴스 반환
+        // If there is a scope linked to the viewModel, return the linked scope,
+        // If the viewModel has not yet been created, return an independent scope instance
         val viewModel = viewModelStore[getViewModelKey(T::class.java)]
         if (viewModel != null) {
             viewModel as? ScopeComponent<AndroidScopes.ViewModelScope>
-                ?: error("${T::class.java}가 ScopeComponent의 하위 타입이 아닙니다. ")
+                ?: error("${T::class.java} is not a subtype of ScopeComponent. ")
             if (!viewModel.isInitialized()) {
                 viewModel.injectScope(scope)
             }
@@ -117,7 +117,9 @@ inline fun <reified T : Activity> ComponentActivity.activityRetainedScope(
 ): Lazy<AndroidScopes.ActivityRetainedScope> = activityRetainedScope(pathBuilder)
 
 @MainThread
-fun ComponentActivity.getRootScope() = (applicationContext as? RootComponent)?.scope ?: error("RootComponent의 하위 타입이 아닙니다. ")
+fun ComponentActivity.getRootScope() =
+    (applicationContext as? RootComponent)?.scope
+        ?: error("Application is not a subtype of RootComponent.")
 
 @MainThread
 inline fun <reified T> ComponentActivity.inject(

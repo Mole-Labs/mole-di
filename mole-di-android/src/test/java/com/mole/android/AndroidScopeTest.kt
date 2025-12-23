@@ -32,7 +32,7 @@ class AndroidScopeTest {
     }
 
     @Test
-    fun `인스턴스를 ViewModel Scope에 등록하면 액티비티가 파괴되어도 살아남는다`() {
+    fun `if an instance is registered in the ViewModel Scope, it survives even if the activity is destroyed`() {
         // given
         app.combineToRoot(
             {
@@ -57,7 +57,7 @@ class AndroidScopeTest {
     }
 
     @Test
-    fun `인스턴스를 ActivityScope에 등록하면 액티비티가 파괴될 때 해제된다`() {
+    fun `if an instance is registered in the ActivityScope, it is released when the activity is destroyed`() {
         // given
         app.combineToRoot({
             activityScope<FakeActivity> {
@@ -83,7 +83,7 @@ class AndroidScopeTest {
     }
 
     @Test
-    fun `인스턴스를 ActivityRetainedScope에 등록하면 액티비티가 파괴되도 살아남는다`() {
+    fun `if an instance is registered in the ActivityRetainedScope, it survives even if the activity is destroyed`() {
         // given
         app.combineToRoot({
             activityScope<FakeActivity> {
@@ -109,7 +109,7 @@ class AndroidScopeTest {
     }
 
     @Test
-    fun `ActivityScope를 ActivityRetainedScope에 중첩 등록할 수 있다`() {
+    fun `ActivityScope can be nested in ActivityRetainedScope`() {
         // given
         app.combineToRoot({
             activityRetainedScope<FakeActivityNestedScope> {
@@ -134,7 +134,7 @@ class AndroidScopeTest {
     }
 
     @Test
-    fun `LazyBind를 사용하면 액티비티 확장함수를 호출할 때 스코프가 생성된다`() {
+    fun `Using LazyBind creates a scope when the activity extension function is called`() {
         // given
         app.combineToRoot({
             activityScope<FakeActivityLazyBind> {

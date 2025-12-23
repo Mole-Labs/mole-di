@@ -30,7 +30,7 @@ class ScopeImpl(
     override fun registerFactory(vararg modules: DependencyModule) {
         val newFactories = modules.flatMap { it.factories }
 
-        // Map으로 변환
+        // Convert to a map
         val newFactoryMap = mutableMapOf<Qualifier, InstanceDependencyFactory<*>>()
         val newScopeMap = mutableMapOf<Qualifier, ScopeDependencyFactory>()
 
@@ -61,7 +61,6 @@ class ScopeImpl(
         factory.putAll(newFactoryMap)
     }
 
-    // 자식 스코프에서 실행
     override fun closeAll() {
         cache.clear()
     }
@@ -113,10 +112,10 @@ class ScopeImpl(
     }
 
     companion object {
-        private const val ERR_CONFLICT_KEY = "이미 동일한 Qualifier가 존재합니다"
-        private const val ERR_CANNOT_FIND_INSTANCE = "컨테이너에서 인스턴스를 찾을 수 없습니다"
-        private const val ERR_CIRCULAR_DEPENDENCY_DETECTED = "순환 참조가 발견되었습니다"
+        private const val ERR_CONFLICT_KEY = "The same Qualifier already exists"
+        private const val ERR_CANNOT_FIND_INSTANCE = "Cannot find instance in container"
+        private const val ERR_CIRCULAR_DEPENDENCY_DETECTED = "Circular dependency detected"
         private const val ERR_CONSTRUCTOR_NOT_FOUND =
-            "등록된 팩토리, 또는 주 생성자를 찾을 수 없습니다"
+            "Registered factory or main constructor not found"
     }
 }

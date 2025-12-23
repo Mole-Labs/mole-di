@@ -9,7 +9,7 @@ import org.junit.Test
 
 class ScopeExtTest {
     @Test
-    fun `Path DSL을 통해 스코프에 접근할 수 있다`() {
+    fun `can access a scope through Path DSL`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {
@@ -32,7 +32,7 @@ class ScopeExtTest {
     }
 
     @Test
-    fun `Path DSL을 통해 객체를 생성할 수 있다`() {
+    fun `can create an object through Path DSL`() {
         // given
         val scope = ScopeImpl(testQualifier)
         combine(scope) {

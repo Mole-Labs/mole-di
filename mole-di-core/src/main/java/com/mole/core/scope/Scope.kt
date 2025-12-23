@@ -5,13 +5,13 @@ import com.mole.core.path.Path
 import com.mole.core.qualifier.Qualifier
 
 interface Scope {
-    /** 인스턴스 조회 */
+    /** Resolve Instance */
     fun get(qualifier: Qualifier): Any
 
-    /** 자식 스코프 획득 */
+    /** Get sub scope */
     fun getSubScope(qualifier: Qualifier): Scope
 
-    /** 경로를 통한 하위 스코프 탐색 */
+    /** Search for sub-scopes via path */
     fun resolvePath(path: Path): Scope
 
     fun declare(
@@ -19,9 +19,9 @@ interface Scope {
         instance: Any,
     )
 
-    /** 의존성 모듈 등록 */
+    /** Register dependency module */
     fun registerFactory(vararg modules: DependencyModule)
 
-    /** 스코프 종료 및 자원 해제 */
+    /** Close scope and release resources */
     fun closeAll()
 }
