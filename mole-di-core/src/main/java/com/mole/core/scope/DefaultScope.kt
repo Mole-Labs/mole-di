@@ -8,9 +8,9 @@ import com.mole.core.qualifier.CreateRule
 import com.mole.core.qualifier.Qualifier
 import java.util.concurrent.ConcurrentHashMap
 
-class ScopeImpl(
+class DefaultScope(
     val qualifier: Qualifier,
-    val parent: ScopeImpl? = null,
+    val parent: DefaultScope? = null,
 ) : Scope {
     private val cache = ConcurrentHashMap<Qualifier, Any>()
 
@@ -65,11 +65,11 @@ class ScopeImpl(
         cache.clear()
     }
 
-    override fun getSubScope(qualifier: Qualifier): ScopeImpl =
+    override fun getSubScope(qualifier: Qualifier): DefaultScope =
         children[qualifier]?.invoke()
             ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
 
-    override fun resolvePath(path: Path): ScopeImpl {
+    override fun resolvePath(path: Path): DefaultScope {
         var current = this
         for (qualifier in path.order) {
             current = current.getSubScope(qualifier)

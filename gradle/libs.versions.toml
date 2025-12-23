@@ -17,6 +17,7 @@ kotlin = "2.2.0"
 kotlinx-coroutines-core = "1.8.1"
 kotlinx-coroutines-test = "1.8.0"
 ktlint = "12.1.0"
+dokka = "2.1.0"
 robolectric = "4.16"
 room-runtime = "2.8.4"
 truth = "1.4.5"
@@ -52,6 +53,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "core-ktx" }
 
 [plugins]
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kotlin-binary-compatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlin-binary-compatibility" }
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

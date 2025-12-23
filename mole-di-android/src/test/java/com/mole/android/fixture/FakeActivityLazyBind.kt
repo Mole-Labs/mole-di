@@ -5,8 +5,8 @@ import androidx.activity.ComponentActivity
 import com.mole.android.scope.AndroidScopes
 import com.mole.android.scope.inject
 import com.mole.android.util.activityScope
-import com.mole.core.LazyBind
-import com.mole.core.ScopeComponent
+import com.mole.core.scope.LazyBind
+import com.mole.core.scope.ScopeComponent
 
 class FakeActivityLazyBind :
     ComponentActivity(),

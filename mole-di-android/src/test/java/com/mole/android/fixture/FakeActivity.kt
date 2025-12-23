@@ -6,7 +6,7 @@ import com.mole.android.scope.AndroidScopes
 import com.mole.android.scope.inject
 import com.mole.android.util.activityRetainedScope
 import com.mole.android.util.activityScope
-import com.mole.core.ScopeComponent
+import com.mole.core.scope.ScopeComponent
 
 class FakeActivity :
     ComponentActivity(),

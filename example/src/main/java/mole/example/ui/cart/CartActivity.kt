@@ -10,8 +10,8 @@ import com.mole.android.scope.AndroidScopes
 import com.mole.android.scope.inject
 import com.mole.android.util.activityScope
 import com.mole.android.util.autoViewModels
-import com.mole.core.ScopeComponent
 import com.mole.core.dsl.Root
+import com.mole.core.scope.ScopeComponent
 import mole.example.R
 import mole.example.databinding.ActivityCartBinding
 

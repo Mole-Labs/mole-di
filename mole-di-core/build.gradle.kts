@@ -2,6 +2,7 @@ plugins {
     id("java-library")
     id("maven-publish")
     alias(libs.plugins.jetbrains.kotlin.jvm)
+    id("org.jetbrains.dokka")
 }
 java {
     sourceCompatibility = JavaVersion.VERSION_11

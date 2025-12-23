@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mole.android.scope.AndroidScopes
-import com.mole.core.LazyBind
-import com.mole.core.ScopeComponent
+import com.mole.core.scope.LazyBind
+import com.mole.core.scope.ScopeComponent
 import kotlinx.coroutines.launch
 import mole.example.domain.model.Product
 import mole.example.domain.repository.CartRepository

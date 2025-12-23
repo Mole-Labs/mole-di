@@ -11,8 +11,8 @@ import androidx.core.view.WindowInsetsCompat
 import com.mole.android.scope.AndroidScopes
 import com.mole.android.util.autoViewModels
 import com.mole.android.util.viewModelScope
-import com.mole.core.LazyBind
-import com.mole.core.ScopeComponent
+import com.mole.core.scope.LazyBind
+import com.mole.core.scope.ScopeComponent
 import mole.example.R
 import mole.example.databinding.ActivityMainBinding
 import mole.example.ui.cart.CartActivity

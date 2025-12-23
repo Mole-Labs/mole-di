@@ -1,7 +1,7 @@
 import com.mole.core.module.combine
 import com.mole.core.path.Path
 import com.mole.core.qualifier.TypeQualifier
-import com.mole.core.scope.ScopeImpl
+import com.mole.core.scope.DefaultScope
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
@@ -10,7 +10,7 @@ class NestedScopeTest {
     @Test
     fun `can get an instance of a scope registered through scope`() {
         // given
-        val scope = ScopeImpl(testQualifier)
+        val scope = DefaultScope(testQualifier)
         combine(scope) {
             scope<TestComponent1> {
                 single { Child1() }
@@ -33,7 +33,7 @@ class NestedScopeTest {
     @Test
     fun `can apply nested scopes`() {
         // given
-        val scope = ScopeImpl(testQualifier)
+        val scope = DefaultScope(testQualifier)
         combine(scope) {
             scope<TestComponent1> {
                 scope<TestComponent2> {
@@ -64,7 +64,7 @@ class NestedScopeTest {
     @Test
     fun `cannot find a dependency registered in another scope from one scope`() {
         // given
-        val scope = ScopeImpl(testQualifier)
+        val scope = DefaultScope(testQualifier)
         combine(scope) {
             scope<TestComponent1> {
                 scope<TestComponent2> {
@@ -93,7 +93,7 @@ class NestedScopeTest {
     @Test
     fun `can find a dependency registered in a parent scope from one scope`() {
         // given
-        val scope = ScopeImpl(testQualifier)
+        val scope = DefaultScope(testQualifier)
         combine(scope) {
             single { Child2() }
             scope<TestComponent1> {
@@ -121,7 +121,7 @@ class NestedScopeTest {
     @Test
     fun `can find a scope through Path`() {
         // given
-        val scope = ScopeImpl(testQualifier)
+        val scope = DefaultScope(testQualifier)
         combine(scope) {
             single { Child2() }
             scope<TestComponent1> {
@@ -149,7 +149,7 @@ class NestedScopeTest {
     @Test
     fun `if a child scope has the same type, it takes precedence over the parent`() {
         // given
-        val scope = ScopeImpl(testQualifier)
+        val scope = DefaultScope(testQualifier)
         combine(scope) {
             single<String> { "ParentValue" }
             scope<TestComponent1> {
@@ -170,7 +170,7 @@ class NestedScopeTest {
     @Test
     fun `if the parent scope is closed, the child scope cannot resolve the parent's dependencies`() {
         // given
-        val rootScope = ScopeImpl(testQualifier)
+        val rootScope = DefaultScope(testQualifier)
         combine(rootScope) {
             single { Child2() }
             scope<TestComponent1> {

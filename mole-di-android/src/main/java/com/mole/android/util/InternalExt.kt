@@ -12,13 +12,13 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.mole.android.scope.AndroidScopes
-import com.mole.core.ScopeComponent
 import com.mole.core.dsl.AbstractPathBuilder
 import com.mole.core.path.Path
 import com.mole.core.qualifier.Qualifier
 import com.mole.core.qualifier.TypeQualifier
+import com.mole.core.scope.DefaultScope
 import com.mole.core.scope.Scope
-import com.mole.core.scope.ScopeImpl
+import com.mole.core.scope.ScopeComponent
 
 @PublishedApi
 @Suppress("UNCHECKED_CAST")
@@ -26,7 +26,7 @@ internal inline fun <reified B : AbstractPathBuilder<B>, reified SCOPE : Android
     initialQualifier: Qualifier,
     noinline builderFactory: (Path) -> B,
     noinline pathBuilder: B.() -> Path,
-    crossinline onResolved: (ScopeImpl) -> Unit = {},
+    crossinline onResolved: (DefaultScope) -> Unit = {},
 ): Lazy<SCOPE> =
     lazy {
         val path = builderFactory(Path(initialQualifier)).pathBuilder()
@@ -43,7 +43,7 @@ internal inline fun <reified B : AbstractPathBuilder<B>, reified SCOPE : Android
     }
 
 @SuppressLint("RestrictedApi")
-internal fun ComponentActivity.initialize(scope: ScopeImpl) {
+internal fun ComponentActivity.initialize(scope: DefaultScope) {
     registerCurrentContext(scope)
     lifecycle.addObserver(
         object : DefaultLifecycleObserver {
@@ -57,7 +57,7 @@ internal fun ComponentActivity.initialize(scope: ScopeImpl) {
 }
 
 internal fun Context.registerCurrentContext(
-    scope: ScopeImpl,
+    scope: DefaultScope,
     context: Context = this,
 ) {
     scope.declare(

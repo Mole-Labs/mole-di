@@ -2,7 +2,7 @@ import com.mole.core.module.combine
 import com.mole.core.qualifier.TypeQualifier
 import com.mole.core.qualifier.annotated
 import com.mole.core.qualifier.named
-import com.mole.core.scope.ScopeImpl
+import com.mole.core.scope.DefaultScope
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatCode
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -14,7 +14,7 @@ class ScopeTest {
     @Test
     fun `get should create an object through a registered factory`() {
         // given
-        val scope = ScopeImpl(testQualifier)
+        val scope = DefaultScope(testQualifier)
         val qualifier = TypeQualifier(Parent::class)
         combine(scope) {
             single { Parent(Child1(), Child2()) }
@@ -30,7 +30,7 @@ class ScopeTest {
     @Test
     fun `should successfully resolve and inject a nested dependency chain`() {
         // given
-        val scope = ScopeImpl(testQualifier)
+        val scope = DefaultScope(testQualifier)
         combine(scope) {
             single { Child1() }
             single { Child2() }
@@ -51,7 +51,7 @@ class ScopeTest {
     @Test
     fun `a dependency registered as a factory creates a different instance each time`() {
         // given
-        val scope = ScopeImpl(testQualifier)
+        val scope = DefaultScope(testQualifier)
         combine(scope) {
             factory { Child1() }
         }
@@ -67,7 +67,7 @@ class ScopeTest {
     @Test
     fun `a dependency registered as a single returns the same instance`() {
         // given
-        val scope = ScopeImpl(testQualifier)
+        val scope = DefaultScope(testQualifier)
         combine(scope) {
             single { Child1() }
             single { Child2() }
@@ -91,7 +91,7 @@ class ScopeTest {
     @Test
     fun `throws an exception when a circular dependency occurs`() {
         // given
-        val scope = ScopeImpl(testQualifier)
+        val scope = DefaultScope(testQualifier)
         combine(scope) {
             single { CircularDependency1(get()) }
             single { CircularDependency2(get()) }
@@ -108,7 +108,7 @@ class ScopeTest {
     @Test
     fun `throws an exception even if a circular dependency occurs in a multi-threaded environment`() {
         // given
-        val scope = ScopeImpl(testQualifier)
+        val scope = DefaultScope(testQualifier)
         combine(scope) {
             single { CircularDependency1(get()) }
             single { CircularDependency2(get()) }
@@ -138,7 +138,7 @@ class ScopeTest {
     @Test
     fun `throws an exception if a required dependency cannot be resolved`() {
         // given
-        val scope = ScopeImpl(testQualifier)
+        val scope = DefaultScope(testQualifier)
         combine(scope) {
             single { Parent(get(), get()) }
         }
@@ -154,7 +154,7 @@ class ScopeTest {
     @Test
     fun `can perform constructor injection by distinguishing the same type by naming`() {
         // given
-        val scope = ScopeImpl(testQualifier)
+        val scope = DefaultScope(testQualifier)
         combine(scope) {
             single(named("child1")) { Child1() }
             single(named("child2")) { Child1() }
@@ -172,7 +172,7 @@ class ScopeTest {
     @Test
     fun `can perform constructor injection by distinguishing the same type by annotation`() {
         // given
-        val scope = ScopeImpl(testQualifier)
+        val scope = DefaultScope(testQualifier)
         combine(scope) {
             single(annotated<TestComponent1>()) { Child1() }
             single(annotated<TestComponent2>()) { Child1() }
@@ -195,7 +195,7 @@ class ScopeTest {
     @Test
     fun `even if requested from the same thread at the same time, the object is created only once`() {
         // given
-        val scope = ScopeImpl(testQualifier)
+        val scope = DefaultScope(testQualifier)
         combine(scope) {
             single { Child1() }
             single { Child2() }
