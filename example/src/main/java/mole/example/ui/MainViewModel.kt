@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mole.android.scope.AndroidScopes
+import com.mole.core.scope.LazyBind
+import com.mole.core.scope.ScopeComponent
 import kotlinx.coroutines.launch
 import mole.example.domain.model.Product
 import mole.example.domain.repository.CartRepository
@@ -12,7 +15,8 @@ import mole.example.domain.repository.ProductRepository
 class MainViewModel(
     private val productRepository: ProductRepository,
     private val cartRepository: CartRepository,
-) : ViewModel() {
+) : ViewModel(),
+    ScopeComponent<AndroidScopes.ViewModelScope> by LazyBind() {
     private val _products: MutableLiveData<List<Product>> = MutableLiveData(emptyList())
     val products: LiveData<List<Product>> get() = _products
 

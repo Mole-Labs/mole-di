@@ -14,13 +14,13 @@ class ProductRepositoryTest {
     }
 
     @Test
-    fun `모든 상품을 불러올 수 있다`() {
+    fun `can load all products`() {
         // given
         val expected =
             listOf(
-                "우테코 과자",
-                "우테코 쥬스",
-                "우테코 아이스크림",
+                "Woowahan Snack",
+                "Woowahan Juice",
+                "Woowahan Ice Cream",
             )
 
         // when

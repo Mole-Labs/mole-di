@@ -14,8 +14,7 @@ inline fun <reified VM : ViewModel> ComponentActivity.autoViewModels(
 ): Lazy<VM> =
     autoViewModels(
         TypeQualifier(VM::class),
-        lazy { scope.value.scope },
-        true,
+        scope,
         extrasProducer,
     )
 
@@ -24,6 +23,5 @@ inline fun <reified VM : ViewModel> ComponentActivity.autoViewModels(noinline ex
     autoViewModels(
         TypeQualifier(VM::class),
         lazy { getRootScope() },
-        false,
         extrasProducer,
     )

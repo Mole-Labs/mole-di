@@ -1,11 +1,21 @@
 package com.mole.core.qualifier
 
+/**
+ * A [Qualifier] that combines another [Qualifier] and a name object to create a more specific, composite identifier.
+ * This is particularly useful for creating nested scopes or for qualifying dependencies within a specific context,
+ * It **goes great with the Android Lifecycle**. like associating a scope with a specific Activity AND a scope key (e.g., `ActivityScope`).
+ *
+ * The `hashCode` is pre-calculated at creation time for performance optimization.
+ *
+ * @property qualifier The base [Qualifier] (e.g., a [TypeQualifier] for an Activity class).
+ * @property name An additional object to make the qualifier unique
+ */
 class ComplexQualifier(
     val qualifier: Qualifier,
     val name: Any,
 ) : Qualifier {
-    // 1. 생성 시점에 해시값을 미리 계산 (성능 핵심)
-    // 31은 이펙티브 자바에서 권장하는 소수(Prime number)로, 해시 충돌을 줄여줍니다.
+    // 1. Calculate hash code at creation time (Performance key)
+    // 31 is a prime number recommended in Effective Java to reduce hash collisions.
     private val cachedHashCode: Int =
         run {
             var result = qualifier.hashCode()

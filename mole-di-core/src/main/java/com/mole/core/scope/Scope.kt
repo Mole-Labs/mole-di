@@ -1,131 +1,71 @@
 package com.mole.core.scope
 
 import com.mole.core.module.DependencyModule
-import com.mole.core.module.InstanceDependencyFactory
-import com.mole.core.module.ScopeDependencyFactory
 import com.mole.core.path.Path
-import com.mole.core.qualifier.CreateRule
 import com.mole.core.qualifier.Qualifier
-import java.util.concurrent.ConcurrentHashMap
 
-class Scope(
-    val qualifier: Qualifier,
-    val parent: Scope? = null,
-) {
-    private val cache = ConcurrentHashMap<Qualifier, Any>()
+/**
+ * Represents a lexical scope that holds and manages dependency instances.
+ * Scopes can be nested to create a hierarchy, allowing for managing dependencies with different lifecycles.
+ * Instances resolved in a child scope can access dependencies from its parent scope.
+ */
+interface Scope {
+    /**
+     * Resolves and returns a dependency instance that matches the given [qualifier].
+     * If the instance is a singleton and already created, it returns the cached instance.
+     * If it's a factory, a new instance is created on each call.
+     * If the instance is not found in the current scope, it will search in the parent scope.
+     *
+     * @param qualifier The unique identifier for the dependency to resolve.
+     * @return The resolved dependency instance.
+     * @throws IllegalStateException if the dependency cannot be found or if a circular dependency is detected.
+     */
+    fun get(qualifier: Qualifier): Any
 
-    private val factory = ConcurrentHashMap<Qualifier, InstanceDependencyFactory<*>>()
-    private val children = ConcurrentHashMap<Qualifier, ScopeDependencyFactory>()
+    /**
+     * Retrieves a direct child scope identified by the given [qualifier].
+     *
+     * @param qualifier The unique identifier for the child scope.
+     * @return The child [Scope] instance.
+     * @throws IllegalStateException if the sub-scope is not defined.
+     */
+    fun getSubScope(qualifier: Qualifier): Scope
 
+    /**
+     * Navigates through the scope hierarchy and returns a descendant scope specified by the [path].
+     * The path is resolved from the current scope downwards.
+     *
+     * @param path The [Path] object describing the route to the target scope.
+     * @return The target descendant [Scope].
+     * @throws IllegalStateException if any scope in the path is not found.
+     */
+    fun resolvePath(path: Path): Scope
+
+    /**
+     * Manually declares and adds a pre-existing instance to this scope's cache.
+     * This is useful for binding instances that are not created by the DI framework itself, such as Android's `Context`.
+     *
+     * @param qualifier The [Qualifier] to associate with the instance.
+     * @param instance The pre-existing object to be stored in the scope.
+     * @throws IllegalStateException if a dependency with the same qualifier already exists.
+     */
     fun declare(
         qualifier: Qualifier,
         instance: Any,
-    ) {
-        if (cache.containsKey(qualifier)) error("$ERR_CONFLICT_KEY : $qualifier")
-        cache[qualifier] = instance
-    }
+    )
 
-    fun registerFactory(vararg modules: DependencyModule) {
-        val newFactories = modules.flatMap { it.factories }
+    /**
+     * Registers one or more [DependencyModule]s into the scope.
+     * This populates the scope with the necessary factories to create dependency instances.
+     *
+     * @param modules A variable number of [DependencyModule]s to register.
+     */
+    fun registerFactory(vararg modules: DependencyModule)
 
-        // Map으로 변환
-        val newFactoryMap = mutableMapOf<Qualifier, InstanceDependencyFactory<*>>()
-        val newScopeMap = mutableMapOf<Qualifier, ScopeDependencyFactory>()
-
-        newFactories.forEach { factory ->
-            val key = factory.qualifier
-            when (factory) {
-                is InstanceDependencyFactory<*> -> {
-                    require(!newFactoryMap.containsKey(key)) { ERR_CONFLICT_KEY }
-                    newFactoryMap[key] = factory
-                }
-
-                is ScopeDependencyFactory -> {
-                    require(!newScopeMap.containsKey(key)) { ERR_CONFLICT_KEY }
-                    newScopeMap[key] = factory
-                }
-            }
-        }
-
-        val conflictingKeys =
-            newFactoryMap.keys.filter {
-                factory.containsKey(it)
-            }
-        require(conflictingKeys.isEmpty()) {
-            "$ERR_CONFLICT_KEY ${conflictingKeys.joinToString()}"
-        }
-
-        children.putAll(newScopeMap)
-        factory.putAll(newFactoryMap)
-    }
-
-    // 자식 스코프에서 실행
-    fun closeAll() {
-        cache.clear()
-    }
-
-    fun get(qualifier: Qualifier): Any {
-        val inProgress = ConcurrentHashMap.newKeySet<Qualifier>()
-
-        return runCatching {
-            get(qualifier, inProgress)
-        }.getOrNull() ?: parent?.get(qualifier, inProgress)
-            ?: error("$ERR_CANNOT_FIND_INSTANCE : $qualifier")
-    }
-
-    fun getSubScope(qualifier: Qualifier): Scope =
-        children[qualifier]?.invoke()
-            ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
-
-    fun resolvePath(path: Path): Scope {
-        var current = this
-        for (qualifier in path.order) {
-            current = current.getSubScope(qualifier)
-        }
-        return current
-    }
-
-    private fun get(
-        qualifier: Qualifier,
-        inProgress: MutableSet<Qualifier>,
-    ): Any {
-        cache[qualifier]?.let { return it }
-
-        val creator = factory[qualifier] ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
-
-        if (inProgress.contains(qualifier)) {
-            error("$ERR_CIRCULAR_DEPENDENCY_DETECTED : $qualifier")
-        }
-
-        inProgress.add(qualifier)
-        try {
-            return save(qualifier, creator)
-        } finally {
-            inProgress.remove(qualifier)
-        }
-    }
-
-    private fun save(
-        qualifier: Qualifier,
-        creator: InstanceDependencyFactory<*>,
-    ): Any {
-        val createRule =
-            factory[qualifier]?.createRule ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
-        return when (createRule) {
-            CreateRule.SINGLE ->
-                cache.computeIfAbsent(qualifier) { _ -> creator() }
-
-            CreateRule.FACTORY -> {
-                creator()
-            }
-        }
-    }
-
-    companion object {
-        private const val ERR_CONFLICT_KEY = "이미 동일한 Qualifier가 존재합니다"
-        private const val ERR_CANNOT_FIND_INSTANCE = "컨테이너에서 인스턴스를 찾을 수 없습니다"
-        private const val ERR_CIRCULAR_DEPENDENCY_DETECTED = "순환 참조가 발견되었습니다"
-        private const val ERR_CONSTRUCTOR_NOT_FOUND =
-            "등록된 팩토리, 또는 주 생성자를 찾을 수 없습니다"
-    }
+    /**
+     * Closes this scope and clears all of its cached singleton instances.
+     * This is typically called when the lifecycle associated with this scope ends (e.g., `Activity.onDestroy()`).
+     * Note: This does not close parent or child scopes.
+     */
+    fun closeAll()
 }

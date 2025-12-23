@@ -1,0 +1,121 @@
+package com.mole.core.scope
+
+import com.mole.core.module.DependencyModule
+import com.mole.core.module.InstanceDependencyFactory
+import com.mole.core.module.ScopeDependencyFactory
+import com.mole.core.path.Path
+import com.mole.core.qualifier.CreateRule
+import com.mole.core.qualifier.Qualifier
+import java.util.concurrent.ConcurrentHashMap
+
+class DefaultScope(
+    val qualifier: Qualifier,
+    val parent: DefaultScope? = null,
+) : Scope {
+    private val cache = ConcurrentHashMap<Qualifier, Any>()
+
+    private val inProgress = ThreadLocal.withInitial { mutableSetOf<Qualifier>() }
+
+    private val factory = ConcurrentHashMap<Qualifier, InstanceDependencyFactory<*>>()
+    private val children = ConcurrentHashMap<Qualifier, ScopeDependencyFactory>()
+
+    override fun declare(
+        qualifier: Qualifier,
+        instance: Any,
+    ) {
+        if (cache.containsKey(qualifier)) error("$ERR_CONFLICT_KEY : $qualifier")
+        cache[qualifier] = instance
+    }
+
+    override fun registerFactory(vararg modules: DependencyModule) {
+        val newFactories = modules.flatMap { it.factories }
+
+        // Convert to a map
+        val newFactoryMap = mutableMapOf<Qualifier, InstanceDependencyFactory<*>>()
+        val newScopeMap = mutableMapOf<Qualifier, ScopeDependencyFactory>()
+
+        newFactories.forEach { factory ->
+            val key = factory.qualifier
+            when (factory) {
+                is InstanceDependencyFactory<*> -> {
+                    require(!newFactoryMap.containsKey(key)) { ERR_CONFLICT_KEY }
+                    newFactoryMap[key] = factory
+                }
+
+                is ScopeDependencyFactory -> {
+                    require(!newScopeMap.containsKey(key)) { ERR_CONFLICT_KEY }
+                    newScopeMap[key] = factory
+                }
+            }
+        }
+
+        val conflictingKeys =
+            newFactoryMap.keys.filter {
+                factory.containsKey(it)
+            }
+        require(conflictingKeys.isEmpty()) {
+            "$ERR_CONFLICT_KEY ${conflictingKeys.joinToString()}"
+        }
+
+        children.putAll(newScopeMap)
+        factory.putAll(newFactoryMap)
+    }
+
+    override fun closeAll() {
+        cache.clear()
+    }
+
+    override fun getSubScope(qualifier: Qualifier): DefaultScope =
+        children[qualifier]?.invoke()
+            ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
+
+    override fun resolvePath(path: Path): DefaultScope {
+        var current = this
+        for (qualifier in path.order) {
+            current = current.getSubScope(qualifier)
+        }
+        return current
+    }
+
+    override fun get(qualifier: Qualifier): Any {
+        cache[qualifier]?.let { return it }
+        if (inProgress.get().contains(qualifier)) {
+            error("$ERR_CIRCULAR_DEPENDENCY_DETECTED : $qualifier")
+        }
+
+        inProgress.get().add(qualifier)
+        val creator =
+            factory[qualifier] ?: return parent?.get(qualifier)
+                ?: error("$ERR_CANNOT_FIND_INSTANCE : $qualifier")
+
+        try {
+            return save(qualifier, creator)
+        } finally {
+            inProgress.get().remove(qualifier)
+        }
+    }
+
+    private fun save(
+        qualifier: Qualifier,
+        creator: InstanceDependencyFactory<*>,
+    ): Any {
+        val createRule =
+            factory[qualifier]?.createRule ?: error("$ERR_CONSTRUCTOR_NOT_FOUND : $qualifier")
+        return when (createRule) {
+            CreateRule.SINGLE ->
+                cache.computeIfAbsent(qualifier) { _ -> creator() }
+
+            CreateRule.FACTORY -> {
+                creator()
+            }
+        }
+    }
+
+    companion object {
+        private const val ERR_CONFLICT_KEY = "The same Qualifier already exists"
+        private const val ERR_CANNOT_FIND_INSTANCE = "Cannot find instance in container"
+        private const val ERR_CIRCULAR_DEPENDENCY_DETECTED = "Circular dependency detected"
+        private const val ERR_CONSTRUCTOR_NOT_FOUND =
+            "Registered factory or main constructor not found"
+    }
+}

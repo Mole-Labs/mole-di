@@ -22,7 +22,7 @@ class CartProductViewHolder(
     fun bind(product: Product) {
         this.product = product
         binding.item = product
-        binding.tvCartProductCreatedAt.text = dateFormatter.formatDate(product.createdAt) // 추가됨
+        binding.tvCartProductCreatedAt.text = dateFormatter.formatDate(product.createdAt) // added
     }
 
     companion object {

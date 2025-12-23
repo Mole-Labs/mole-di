@@ -6,19 +6,23 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.mole.android.scope.AndroidScopes
 import com.mole.android.scope.inject
 import com.mole.android.util.activityScope
 import com.mole.android.util.autoViewModels
 import com.mole.core.dsl.Root
+import com.mole.core.scope.ScopeComponent
 import mole.example.R
 import mole.example.databinding.ActivityCartBinding
 
-class CartActivity : AppCompatActivity() {
+class CartActivity :
+    AppCompatActivity(),
+    ScopeComponent<AndroidScopes.ActivityScope> {
     private val binding by lazy { ActivityCartBinding.inflate(layoutInflater) }
 
     private val viewModel by autoViewModels<CartViewModel>()
 
-    private val scope =
+    override val scope =
         activityScope {
             find of activityRetainedScope<CartActivity>() of Root
         }

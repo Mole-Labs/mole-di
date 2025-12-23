@@ -1,8 +1,8 @@
 package com.mole.android.util
 
 import androidx.lifecycle.ViewModel
-import com.mole.core.scope.Scope
+import com.mole.android.scope.AndroidScopes
 
 internal class SavedHandleViewModel : ViewModel() {
-    var scope: Scope? = null
+    var scope: AndroidScopes.ActivityRetainedScope? = null
 }

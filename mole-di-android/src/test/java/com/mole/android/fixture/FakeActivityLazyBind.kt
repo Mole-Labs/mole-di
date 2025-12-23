@@ -4,24 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import com.mole.android.scope.AndroidScopes
 import com.mole.android.scope.inject
-import com.mole.android.util.activityRetainedScope
 import com.mole.android.util.activityScope
+import com.mole.core.scope.LazyBind
 import com.mole.core.scope.ScopeComponent
 
-class FakeActivity :
+class FakeActivityLazyBind :
     ComponentActivity(),
-    ScopeComponent<AndroidScopes.ActivityScope> {
-    override val scope = activityScope()
-
-    val activityRetainedScope = activityRetainedScope()
-
-    val activityArgument by scope.inject<Child2>()
-
-    val activityRetainedArgument by activityRetainedScope.inject<Child3>()
+    ScopeComponent<AndroidScopes.ActivityScope> by LazyBind() {
+    val activityArgument by activityScope().inject<Child2>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityArgument
-        activityRetainedArgument
     }
 }
