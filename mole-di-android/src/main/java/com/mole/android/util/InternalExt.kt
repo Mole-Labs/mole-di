@@ -8,16 +8,17 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelLazy
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.mole.android.scope.AndroidScopes
+import com.mole.core.ScopeComponent
 import com.mole.core.dsl.AbstractPathBuilder
 import com.mole.core.path.Path
 import com.mole.core.qualifier.Qualifier
 import com.mole.core.qualifier.TypeQualifier
 import com.mole.core.scope.Scope
+import com.mole.core.scope.ScopeImpl
 
 @PublishedApi
 @Suppress("UNCHECKED_CAST")
@@ -25,7 +26,7 @@ internal inline fun <reified B : AbstractPathBuilder<B>, reified SCOPE : Android
     initialQualifier: Qualifier,
     noinline builderFactory: (Path) -> B,
     noinline pathBuilder: B.() -> Path,
-    crossinline onResolved: (Scope) -> Unit = {},
+    crossinline onResolved: (ScopeImpl) -> Unit = {},
 ): Lazy<SCOPE> =
     lazy {
         val path = builderFactory(Path(initialQualifier)).pathBuilder()
@@ -41,19 +42,8 @@ internal inline fun <reified B : AbstractPathBuilder<B>, reified SCOPE : Android
         } as SCOPE
     }
 
-@MainThread
-internal fun ComponentActivity.registerActivityRetainedLifecycle(scope: Scope) {
-    val viewModel = ViewModelProvider(this)[SavedHandleViewModel::class.java]
-    if (viewModel.scope == null) {
-        viewModel.scope = scope
-        registerCurrentContext(scope)
-        viewModel.addCloseable { scope.closeAll() }
-    }
-    viewModel.scope!!
-}
-
 @SuppressLint("RestrictedApi")
-internal fun ComponentActivity.initialize(scope: Scope) {
+internal fun ComponentActivity.initialize(scope: ScopeImpl) {
     registerCurrentContext(scope)
     lifecycle.addObserver(
         object : DefaultLifecycleObserver {
@@ -66,27 +56,33 @@ internal fun ComponentActivity.initialize(scope: Scope) {
     )
 }
 
-internal fun Context.registerCurrentContext(scope: Scope) {
+internal fun Context.registerCurrentContext(
+    scope: ScopeImpl,
+    context: Context = this,
+) {
     scope.declare(
         qualifier = TypeQualifier(Context::class),
-        instance = this,
+        instance = context,
     )
 }
 
 @MainThread
 @PublishedApi
+@Suppress("UNCHECKED_CAST")
 internal inline fun <reified VM : ViewModel> ComponentActivity.autoViewModels(
     qualifier: Qualifier = TypeQualifier(VM::class),
     scope: Lazy<Scope>,
-    addCloseFlag: Boolean,
     noinline extrasProducer: (() -> CreationExtras)? = null,
 ): Lazy<VM> {
     val factory =
         viewModelFactory {
             initializer {
-                val viewModel = scope.value.get(qualifier) as VM
-                if (addCloseFlag) {
-                    viewModel.addCloseable { scope.value.closeAll() }
+                val scope = scope.value
+                val viewModel = scope.get(qualifier) as VM
+                if (scope is AndroidScopes.ViewModelScope) {
+                    (viewModel as? ScopeComponent<AndroidScopes.ViewModelScope>)?.injectScope(lazy { scope })
+                        ?: error("${VM::class.java}가 ScopeComponent의 하위 타입이 아닙니다. ")
+                    viewModel.addCloseable { scope.closeAll() }
                 }
                 viewModel
             }
@@ -97,4 +93,12 @@ internal inline fun <reified VM : ViewModel> ComponentActivity.autoViewModels(
         { factory },
         { extrasProducer?.invoke() ?: this.defaultViewModelCreationExtras },
     )
+}
+
+@PublishedApi
+internal fun getViewModelKey(clazz: Class<out ViewModel>): String {
+    val canonicalName =
+        clazz.canonicalName
+            ?: throw IllegalArgumentException("Local and anonymous classes can't be ViewModels")
+    return "androidx.lifecycle.ViewModelProvider.DefaultKey:$canonicalName"
 }

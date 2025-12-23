@@ -1,7 +1,7 @@
 import com.mole.core.module.combine
 import com.mole.core.path.Path
 import com.mole.core.qualifier.TypeQualifier
-import com.mole.core.scope.Scope
+import com.mole.core.scope.ScopeImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
@@ -10,7 +10,7 @@ class NestedScopeTest {
     @Test
     fun `scope를 통해 등록한 스코프의 인스턴스를 가져올 수 있다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             scope<TestComponent1> {
                 single { Child1() }
@@ -33,7 +33,7 @@ class NestedScopeTest {
     @Test
     fun `중첩해서 scope를 적용할 수 있다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             scope<TestComponent1> {
                 scope<TestComponent2> {
@@ -64,7 +64,7 @@ class NestedScopeTest {
     @Test
     fun `한 스코프에서 다른 스코프에 등록된 의존성을 찾을 수 없다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             scope<TestComponent1> {
                 scope<TestComponent2> {
@@ -93,7 +93,7 @@ class NestedScopeTest {
     @Test
     fun `한 스코프에서 부모 스코프에 등록된 의존성을 찾을 수 있다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             single { Child2() }
             scope<TestComponent1> {
@@ -121,7 +121,7 @@ class NestedScopeTest {
     @Test
     fun `Path를 통해 스코프를 찾을 수 있다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             single { Child2() }
             scope<TestComponent1> {
@@ -149,7 +149,7 @@ class NestedScopeTest {
     @Test
     fun `자식 스코프에 동일한 타입이 있으면 부모보다 우선한다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             single<String> { "ParentValue" }
             scope<TestComponent1> {
@@ -170,7 +170,7 @@ class NestedScopeTest {
     @Test
     fun `부모 스코프가 close되면 자식 스코프에서 부모의 의존성을 조회할 수 없다`() {
         // given
-        val rootScope = Scope(testQualifier)
+        val rootScope = ScopeImpl(testQualifier)
         combine(rootScope) {
             single { Child2() }
             scope<TestComponent1> {

@@ -1,8 +1,8 @@
 package com.mole.core.dsl
 
-import com.mole.core.scope.Scope
+import com.mole.core.scope.ScopeImpl
 
 @ModuleBuilderDSL
 class DependencyModuleBuilder(
-    override val scope: Scope,
+    override val scope: ScopeImpl,
 ) : AbstractModuleBuilder()

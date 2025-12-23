@@ -3,7 +3,11 @@
 package com.mole.android.fixture
 
 import androidx.lifecycle.ViewModel
+import com.mole.android.scope.AndroidScopes
+import com.mole.core.LazyBind
+import com.mole.core.ScopeComponent
 
 class TestViewModel(
     val arg1: Child1,
-) : ViewModel()
+) : ViewModel(),
+    ScopeComponent<AndroidScopes.ViewModelScope> by LazyBind()

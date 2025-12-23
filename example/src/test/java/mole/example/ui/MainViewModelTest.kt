@@ -6,7 +6,7 @@ import com.mole.core.module.combine
 import com.mole.core.qualifier.NamedQualifier
 import com.mole.core.qualifier.annotated
 import com.mole.core.qualifier.named
-import com.mole.core.scope.Scope
+import com.mole.core.scope.ScopeImpl
 import com.mole.core.scope.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,7 +38,7 @@ class MainViewModelTest {
     @Before
     fun setup() {
         val scope =
-            Scope(
+            ScopeImpl(
                 NamedQualifier("MainViewModelTest"),
             )
         combine(scope) {

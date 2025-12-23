@@ -7,11 +7,15 @@ import com.mole.android.scope.inject
 import com.mole.android.util.activityRetainedScope
 import com.mole.android.util.activityScope
 import com.mole.core.ScopeComponent
+import com.mole.core.dsl.Root
 
-class FakeActivity :
+class FakeActivityNestedScope :
     ComponentActivity(),
     ScopeComponent<AndroidScopes.ActivityScope> {
-    override val scope = activityScope()
+    override val scope =
+        activityScope {
+            find of activityRetainedScope<FakeActivityNestedScope>() of Root
+        }
 
     val activityRetainedScope = activityRetainedScope()
 

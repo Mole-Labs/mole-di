@@ -8,18 +8,23 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.mole.android.scope.AndroidScopes
 import com.mole.android.util.autoViewModels
 import com.mole.android.util.viewModelScope
+import com.mole.core.LazyBind
+import com.mole.core.ScopeComponent
 import mole.example.R
 import mole.example.databinding.ActivityMainBinding
 import mole.example.ui.cart.CartActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity :
+    AppCompatActivity(),
+    ScopeComponent<AndroidScopes.ActivityScope> by LazyBind() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
-    private val scope = viewModelScope<MainViewModel>()
+    private val viewModelScope = viewModelScope<MainViewModel>()
 
-    private val viewModel by autoViewModels<MainViewModel>(scope)
+    private val viewModel by autoViewModels<MainViewModel>(viewModelScope)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

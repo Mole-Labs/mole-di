@@ -1,7 +1,7 @@
 import com.mole.core.dsl.Root
 import com.mole.core.module.combine
 import com.mole.core.qualifier.TypeQualifier
-import com.mole.core.scope.Scope
+import com.mole.core.scope.ScopeImpl
 import com.mole.core.scope.get
 import com.mole.core.scope.subScope
 import org.assertj.core.api.Assertions.assertThat
@@ -11,7 +11,7 @@ class ScopeExtTest {
     @Test
     fun `Path DSL을 통해 스코프에 접근할 수 있다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             single { Child2() }
             scope<TestComponent1> {
@@ -34,7 +34,7 @@ class ScopeExtTest {
     @Test
     fun `Path DSL을 통해 객체를 생성할 수 있다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             single { Child2() }
             scope<TestComponent1> {

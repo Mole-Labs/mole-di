@@ -8,12 +8,12 @@ import com.mole.core.module.ScopeDependencyFactory
 import com.mole.core.qualifier.CreateRule
 import com.mole.core.qualifier.Qualifier
 import com.mole.core.qualifier.TypeQualifier
-import com.mole.core.scope.Scope
+import com.mole.core.scope.ScopeImpl
 
 @ModuleBuilderDSL
 @OptIn(MoleInternalApi::class)
 abstract class AbstractModuleBuilder {
-    abstract val scope: Scope
+    abstract val scope: ScopeImpl
 
     val factories = mutableListOf<DependencyFactory<*>>()
 
@@ -47,7 +47,7 @@ abstract class AbstractModuleBuilder {
     @MoleInternalApi
     fun <T : AbstractModuleBuilder> baseScope(
         qualifier: Qualifier,
-        builderGenerator: Scope.() -> T,
+        builderGenerator: ScopeImpl.() -> T,
         block: T.() -> Unit,
     ) {
         val createRule = CreateRule.SINGLE
@@ -56,7 +56,7 @@ abstract class AbstractModuleBuilder {
                 qualifier,
                 createRule,
             ) {
-                Scope(qualifier, scope).apply {
+                ScopeImpl(qualifier, scope).apply {
                     val builder = builderGenerator(this)
                     block(builder)
                     val modules = builder.build()

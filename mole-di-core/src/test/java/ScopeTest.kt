@@ -2,7 +2,7 @@ import com.mole.core.module.combine
 import com.mole.core.qualifier.TypeQualifier
 import com.mole.core.qualifier.annotated
 import com.mole.core.qualifier.named
-import com.mole.core.scope.Scope
+import com.mole.core.scope.ScopeImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatCode
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -14,7 +14,7 @@ class ScopeTest {
     @Test
     fun `get는 등록된 팩토리를 통해 객체를 생성해야 한다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         val qualifier = TypeQualifier(Parent::class)
         combine(scope) {
             single { Parent(Child1(), Child2()) }
@@ -30,7 +30,7 @@ class ScopeTest {
     @Test
     fun `중첩 의존성 체인을 성공적으로 해결하고 주입해야 한다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             single { Child1() }
             single { Child2() }
@@ -51,7 +51,7 @@ class ScopeTest {
     @Test
     fun `factory로 등록한 의존성은 매번 다른 인스턴스를 생성한다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             factory { Child1() }
         }
@@ -67,7 +67,7 @@ class ScopeTest {
     @Test
     fun `single로 등록한 의존성은 동일 인스턴스를 반환한다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             single { Child1() }
             single { Child2() }
@@ -91,7 +91,7 @@ class ScopeTest {
     @Test
     fun `순환 참조가 발생하면 예외를 던진다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             single { CircularDependency1(get()) }
             single { CircularDependency2(get()) }
@@ -108,7 +108,7 @@ class ScopeTest {
     @Test
     fun `멀티 스레드 환경에서 순환 참조가 발생해도 예외를 던진다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             single { CircularDependency1(get()) }
             single { CircularDependency2(get()) }
@@ -138,7 +138,7 @@ class ScopeTest {
     @Test
     fun `필수 의존성을 해결할 수 없으면 예외를 던진다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             single { Parent(get(), get()) }
         }
@@ -154,7 +154,7 @@ class ScopeTest {
     @Test
     fun `같은 타입을 네이밍으로 구분하여 생성자 주입을 수행할 수 있다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             single(named("child1")) { Child1() }
             single(named("child2")) { Child1() }
@@ -172,7 +172,7 @@ class ScopeTest {
     @Test
     fun `같은 타입을 어노테이션으로 구분하여 생성자 주입을 수행할 수 있다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             single(annotated<TestComponent1>()) { Child1() }
             single(annotated<TestComponent2>()) { Child1() }
@@ -195,7 +195,7 @@ class ScopeTest {
     @Test
     fun `동시에 같은 스레드에서 요청해도 한 번만 객체가 생성된다`() {
         // given
-        val scope = Scope(testQualifier)
+        val scope = ScopeImpl(testQualifier)
         combine(scope) {
             single { Child1() }
             single { Child2() }

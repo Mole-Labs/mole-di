@@ -9,12 +9,12 @@ import com.mole.core.dsl.ModuleBuilderDSL
 import com.mole.core.qualifier.ComplexQualifier
 import com.mole.core.qualifier.Qualifier
 import com.mole.core.qualifier.TypeQualifier
-import com.mole.core.scope.Scope
+import com.mole.core.scope.ScopeImpl
 
 @ModuleBuilderDSL
 @OptIn(MoleInternalApi::class)
 class ActivityRetainedScopeModuleBuilder(
-    override val scope: Scope,
+    override val scope: ScopeImpl,
 ) : AbstractModuleBuilder() {
     inline fun <reified T : Activity> activityScope(
         qualifier: Qualifier = TypeQualifier(T::class),

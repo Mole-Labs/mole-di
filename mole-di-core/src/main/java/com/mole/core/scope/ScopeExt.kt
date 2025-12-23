@@ -5,28 +5,28 @@ import com.mole.core.path.Path
 import com.mole.core.qualifier.Qualifier
 import com.mole.core.qualifier.TypeQualifier
 
-fun Scope.subScope(pathBuilder: ScopePathBuilder.() -> Path): Scope {
+fun ScopeImpl.subScope(pathBuilder: ScopePathBuilder.() -> Path): ScopeImpl {
     val path = pathBuilder(ScopePathBuilder(Path()))
     return resolvePath(path)
 }
 
 @JvmName("inlineGet")
-inline fun <reified T : Any> Scope.get(
+inline fun <reified T : Any> ScopeImpl.get(
     qualifier: Qualifier = TypeQualifier(T::class),
     noinline pathBuilder: ScopePathBuilder.() -> Path = { Path() },
 ): Any = resolvePath(pathBuilder(ScopePathBuilder(Path()))).get(qualifier)
 
-fun Scope.get(
+fun ScopeImpl.get(
     qualifier: Qualifier,
     pathBuilder: ScopePathBuilder.() -> Path,
 ): Any = resolvePath(pathBuilder(ScopePathBuilder(Path()))).get(qualifier)
 
-inline fun <reified T> Lazy<Scope>.inject(
+inline fun <reified T> Lazy<ScopeImpl>.inject(
     qualifier: Qualifier = TypeQualifier(T::class),
     mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
 ): Lazy<T> = lazy(mode) { value.get(qualifier) as T }
 
-inline fun <reified T> Lazy<Scope>.inject(
+inline fun <reified T> Lazy<ScopeImpl>.inject(
     qualifier: Qualifier = TypeQualifier(T::class),
     mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
     noinline pathBuilder: ScopePathBuilder.() -> Path,
