@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
-    alias(libs.plugins.dokka) apply false
+    alias(libs.plugins.dokka)
     alias(libs.plugins.kotlin.binary.compatibility) apply false
 }
 
@@ -22,4 +22,9 @@ allprojects {
                 .get()
                 .pluginId,
     )
+}
+
+dependencies {
+    dokka(project(":mole-di-android"))
+    dokka(project(":mole-di-core"))
 }
