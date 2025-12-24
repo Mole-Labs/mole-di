@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.binary.compatibility)
     id("maven-publish")
     id("com.diffplug.spotless") version "8.1.0"
     id("org.jetbrains.dokka")

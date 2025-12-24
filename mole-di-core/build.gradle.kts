@@ -2,6 +2,7 @@ plugins {
     id("java-library")
     id("maven-publish")
     alias(libs.plugins.jetbrains.kotlin.jvm)
+    alias(libs.plugins.kotlin.binary.compatibility)
     id("org.jetbrains.dokka")
 }
 java {

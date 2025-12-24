@@ -1,0 +1,184 @@
+public final class com/mole/android/dsl/AndroidScopeKeys : java/lang/Enum {
+	public static final field ACTIVITY Lcom/mole/android/dsl/AndroidScopeKeys;
+	public static final field ACTIVITY_RETAINED Lcom/mole/android/dsl/AndroidScopeKeys;
+	public static final field VIEWMODEL Lcom/mole/android/dsl/AndroidScopeKeys;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/mole/android/dsl/AndroidScopeKeys;
+	public static fun values ()[Lcom/mole/android/dsl/AndroidScopeKeys;
+}
+
+public final class com/mole/android/dsl/module/ActivityRetainedScopeModuleBuilder : com/mole/core/dsl/AbstractModuleBuilder {
+	public fun <init> (Lcom/mole/core/scope/Scope;)V
+	public fun getScope ()Lcom/mole/core/scope/Scope;
+}
+
+public final class com/mole/android/dsl/module/ActivityScopeModuleBuilder : com/mole/core/dsl/AbstractModuleBuilder {
+	public fun <init> (Lcom/mole/core/scope/Scope;)V
+	public fun getScope ()Lcom/mole/core/scope/Scope;
+}
+
+public final class com/mole/android/dsl/module/ViewModelScopeModuleBuilder : com/mole/core/dsl/AbstractModuleBuilder {
+	public fun <init> (Lcom/mole/core/scope/Scope;)V
+	public fun getScope ()Lcom/mole/core/scope/Scope;
+}
+
+public final class com/mole/android/dsl/path/ActivityRetainedScopePathBuilder : com/mole/core/dsl/AbstractPathBuilder {
+	public fun <init> (Lcom/mole/core/path/Path;)V
+	public fun getPath ()Lcom/mole/core/path/Path;
+}
+
+public final class com/mole/android/dsl/path/ActivityRetainedScopeToken {
+	public static final synthetic fun box-impl (Lcom/mole/core/qualifier/ComplexQualifier;)Lcom/mole/android/dsl/path/ActivityRetainedScopeToken;
+	public static fun constructor-impl (Lcom/mole/core/qualifier/ComplexQualifier;)Lcom/mole/core/qualifier/ComplexQualifier;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Lcom/mole/core/qualifier/ComplexQualifier;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Lcom/mole/core/qualifier/ComplexQualifier;Lcom/mole/core/qualifier/ComplexQualifier;)Z
+	public final fun getValue ()Lcom/mole/core/qualifier/ComplexQualifier;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Lcom/mole/core/qualifier/ComplexQualifier;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Lcom/mole/core/qualifier/ComplexQualifier;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Lcom/mole/core/qualifier/ComplexQualifier;
+}
+
+public final class com/mole/android/dsl/path/ActivityScopePathBuilder : com/mole/core/dsl/AbstractPathBuilder {
+	public fun <init> (Lcom/mole/core/path/Path;)V
+	public fun getPath ()Lcom/mole/core/path/Path;
+	public final fun of-253BKIA (Lcom/mole/core/qualifier/ComplexQualifier;)Lcom/mole/android/dsl/path/ActivityRetainedScopePathBuilder;
+	public final fun of-re1NlXk (Lcom/mole/core/qualifier/ComplexQualifier;)Lcom/mole/android/dsl/path/ViewModelScopePathBuilder;
+}
+
+public final class com/mole/android/dsl/path/ActivityScopeToken {
+	public static final synthetic fun box-impl (Lcom/mole/core/qualifier/ComplexQualifier;)Lcom/mole/android/dsl/path/ActivityScopeToken;
+	public static fun constructor-impl (Lcom/mole/core/qualifier/ComplexQualifier;)Lcom/mole/core/qualifier/ComplexQualifier;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Lcom/mole/core/qualifier/ComplexQualifier;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Lcom/mole/core/qualifier/ComplexQualifier;Lcom/mole/core/qualifier/ComplexQualifier;)Z
+	public final fun getValue ()Lcom/mole/core/qualifier/ComplexQualifier;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Lcom/mole/core/qualifier/ComplexQualifier;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Lcom/mole/core/qualifier/ComplexQualifier;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Lcom/mole/core/qualifier/ComplexQualifier;
+}
+
+public final class com/mole/android/dsl/path/AndroidScopePathBuilderExtKt {
+	public static final fun of-C6AfF5k (Lcom/mole/core/dsl/ScopePathBuilder;Lcom/mole/core/qualifier/ComplexQualifier;)Lcom/mole/android/dsl/path/ActivityScopePathBuilder;
+	public static final fun of-JP_ZwGg (Lcom/mole/core/dsl/ScopePathBuilder;Lcom/mole/core/qualifier/ComplexQualifier;)Lcom/mole/android/dsl/path/ActivityRetainedScopePathBuilder;
+	public static final fun of-ZKnZG2I (Lcom/mole/core/dsl/ScopePathBuilder;Lcom/mole/core/qualifier/ComplexQualifier;)Lcom/mole/android/dsl/path/ViewModelScopePathBuilder;
+}
+
+public final class com/mole/android/dsl/path/ViewModelScopePathBuilder : com/mole/core/dsl/AbstractPathBuilder {
+	public fun <init> (Lcom/mole/core/path/Path;)V
+	public fun getPath ()Lcom/mole/core/path/Path;
+	public final fun of-253BKIA (Lcom/mole/core/qualifier/ComplexQualifier;)Lcom/mole/android/dsl/path/ActivityRetainedScopePathBuilder;
+}
+
+public final class com/mole/android/dsl/path/ViewModelScopeToken {
+	public static final synthetic fun box-impl (Lcom/mole/core/qualifier/ComplexQualifier;)Lcom/mole/android/dsl/path/ViewModelScopeToken;
+	public static fun constructor-impl (Lcom/mole/core/qualifier/ComplexQualifier;)Lcom/mole/core/qualifier/ComplexQualifier;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Lcom/mole/core/qualifier/ComplexQualifier;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Lcom/mole/core/qualifier/ComplexQualifier;Lcom/mole/core/qualifier/ComplexQualifier;)Z
+	public final fun getValue ()Lcom/mole/core/qualifier/ComplexQualifier;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Lcom/mole/core/qualifier/ComplexQualifier;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Lcom/mole/core/qualifier/ComplexQualifier;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Lcom/mole/core/qualifier/ComplexQualifier;
+}
+
+public abstract interface class com/mole/android/scope/AndroidScopes : com/mole/core/scope/Scope {
+	public abstract fun getScope ()Lcom/mole/core/scope/DefaultScope;
+}
+
+public final class com/mole/android/scope/AndroidScopes$ActivityRetainedScope : com/mole/android/scope/AndroidScopes, com/mole/core/scope/Scope {
+	public static final synthetic fun box-impl (Lcom/mole/core/scope/DefaultScope;)Lcom/mole/android/scope/AndroidScopes$ActivityRetainedScope;
+	public fun closeAll ()V
+	public static fun closeAll-impl (Lcom/mole/core/scope/DefaultScope;)V
+	public static fun constructor-impl (Lcom/mole/core/scope/DefaultScope;)Lcom/mole/core/scope/DefaultScope;
+	public fun declare (Lcom/mole/core/qualifier/Qualifier;Ljava/lang/Object;)V
+	public static fun declare-impl (Lcom/mole/core/scope/DefaultScope;Lcom/mole/core/qualifier/Qualifier;Ljava/lang/Object;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Lcom/mole/core/scope/DefaultScope;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Lcom/mole/core/scope/DefaultScope;Lcom/mole/core/scope/DefaultScope;)Z
+	public fun get (Lcom/mole/core/qualifier/Qualifier;)Ljava/lang/Object;
+	public static fun get-impl (Lcom/mole/core/scope/DefaultScope;Lcom/mole/core/qualifier/Qualifier;)Ljava/lang/Object;
+	public fun getScope ()Lcom/mole/core/scope/DefaultScope;
+	public fun getSubScope (Lcom/mole/core/qualifier/Qualifier;)Lcom/mole/core/scope/Scope;
+	public static fun getSubScope-impl (Lcom/mole/core/scope/DefaultScope;Lcom/mole/core/qualifier/Qualifier;)Lcom/mole/core/scope/Scope;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Lcom/mole/core/scope/DefaultScope;)I
+	public fun registerFactory ([Lcom/mole/core/module/DependencyModule;)V
+	public static fun registerFactory-impl (Lcom/mole/core/scope/DefaultScope;[Lcom/mole/core/module/DependencyModule;)V
+	public fun resolvePath (Lcom/mole/core/path/Path;)Lcom/mole/core/scope/Scope;
+	public static fun resolvePath-impl (Lcom/mole/core/scope/DefaultScope;Lcom/mole/core/path/Path;)Lcom/mole/core/scope/Scope;
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Lcom/mole/core/scope/DefaultScope;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Lcom/mole/core/scope/DefaultScope;
+}
+
+public final class com/mole/android/scope/AndroidScopes$ActivityScope : com/mole/android/scope/AndroidScopes, com/mole/core/scope/Scope {
+	public static final synthetic fun box-impl (Lcom/mole/core/scope/DefaultScope;)Lcom/mole/android/scope/AndroidScopes$ActivityScope;
+	public fun closeAll ()V
+	public static fun closeAll-impl (Lcom/mole/core/scope/DefaultScope;)V
+	public static fun constructor-impl (Lcom/mole/core/scope/DefaultScope;)Lcom/mole/core/scope/DefaultScope;
+	public fun declare (Lcom/mole/core/qualifier/Qualifier;Ljava/lang/Object;)V
+	public static fun declare-impl (Lcom/mole/core/scope/DefaultScope;Lcom/mole/core/qualifier/Qualifier;Ljava/lang/Object;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Lcom/mole/core/scope/DefaultScope;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Lcom/mole/core/scope/DefaultScope;Lcom/mole/core/scope/DefaultScope;)Z
+	public fun get (Lcom/mole/core/qualifier/Qualifier;)Ljava/lang/Object;
+	public static fun get-impl (Lcom/mole/core/scope/DefaultScope;Lcom/mole/core/qualifier/Qualifier;)Ljava/lang/Object;
+	public fun getScope ()Lcom/mole/core/scope/DefaultScope;
+	public fun getSubScope (Lcom/mole/core/qualifier/Qualifier;)Lcom/mole/core/scope/Scope;
+	public static fun getSubScope-impl (Lcom/mole/core/scope/DefaultScope;Lcom/mole/core/qualifier/Qualifier;)Lcom/mole/core/scope/Scope;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Lcom/mole/core/scope/DefaultScope;)I
+	public fun registerFactory ([Lcom/mole/core/module/DependencyModule;)V
+	public static fun registerFactory-impl (Lcom/mole/core/scope/DefaultScope;[Lcom/mole/core/module/DependencyModule;)V
+	public fun resolvePath (Lcom/mole/core/path/Path;)Lcom/mole/core/scope/Scope;
+	public static fun resolvePath-impl (Lcom/mole/core/scope/DefaultScope;Lcom/mole/core/path/Path;)Lcom/mole/core/scope/Scope;
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Lcom/mole/core/scope/DefaultScope;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Lcom/mole/core/scope/DefaultScope;
+}
+
+public final class com/mole/android/scope/AndroidScopes$ViewModelScope : com/mole/android/scope/AndroidScopes, com/mole/core/scope/Scope {
+	public static final synthetic fun box-impl (Lcom/mole/core/scope/DefaultScope;)Lcom/mole/android/scope/AndroidScopes$ViewModelScope;
+	public fun closeAll ()V
+	public static fun closeAll-impl (Lcom/mole/core/scope/DefaultScope;)V
+	public static fun constructor-impl (Lcom/mole/core/scope/DefaultScope;)Lcom/mole/core/scope/DefaultScope;
+	public fun declare (Lcom/mole/core/qualifier/Qualifier;Ljava/lang/Object;)V
+	public static fun declare-impl (Lcom/mole/core/scope/DefaultScope;Lcom/mole/core/qualifier/Qualifier;Ljava/lang/Object;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Lcom/mole/core/scope/DefaultScope;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Lcom/mole/core/scope/DefaultScope;Lcom/mole/core/scope/DefaultScope;)Z
+	public fun get (Lcom/mole/core/qualifier/Qualifier;)Ljava/lang/Object;
+	public static fun get-impl (Lcom/mole/core/scope/DefaultScope;Lcom/mole/core/qualifier/Qualifier;)Ljava/lang/Object;
+	public fun getScope ()Lcom/mole/core/scope/DefaultScope;
+	public fun getSubScope (Lcom/mole/core/qualifier/Qualifier;)Lcom/mole/core/scope/Scope;
+	public static fun getSubScope-impl (Lcom/mole/core/scope/DefaultScope;Lcom/mole/core/qualifier/Qualifier;)Lcom/mole/core/scope/Scope;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Lcom/mole/core/scope/DefaultScope;)I
+	public fun registerFactory ([Lcom/mole/core/module/DependencyModule;)V
+	public static fun registerFactory-impl (Lcom/mole/core/scope/DefaultScope;[Lcom/mole/core/module/DependencyModule;)V
+	public fun resolvePath (Lcom/mole/core/path/Path;)Lcom/mole/core/scope/Scope;
+	public static fun resolvePath-impl (Lcom/mole/core/scope/DefaultScope;Lcom/mole/core/path/Path;)Lcom/mole/core/scope/Scope;
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Lcom/mole/core/scope/DefaultScope;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Lcom/mole/core/scope/DefaultScope;
+}
+
+public final class com/mole/android/util/ComponentActivityExtKt {
+	public static final fun activityRetainedScope (Landroidx/activity/ComponentActivity;Lkotlin/jvm/functions/Function1;)Lkotlin/Lazy;
+	public static synthetic fun activityRetainedScope$default (Landroidx/activity/ComponentActivity;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlin/Lazy;
+	public static final fun activityScope (Landroidx/activity/ComponentActivity;Lkotlin/jvm/functions/Function1;)Lkotlin/Lazy;
+	public static synthetic fun activityScope$default (Landroidx/activity/ComponentActivity;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlin/Lazy;
+	public static final fun getRootScope (Landroidx/activity/ComponentActivity;)Lcom/mole/core/scope/DefaultScope;
+}
+
+public final class com/mole/android/util/InternalExtKt {
+	public static final fun getViewModelKey (Ljava/lang/Class;)Ljava/lang/String;
+}
+
