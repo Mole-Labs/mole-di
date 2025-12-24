@@ -1,3 +1,10 @@
+[한국어](https://github.com/Mole-Labs/mole-di/blob/main/README.ko.md)
+[English](https://github.com/Mole-Labs/mole-di/blob/main/README.md)  
+
+[![Release](https://jitpack.io/v/Mole-Labs/mole-di.svg)](https://jitpack.io/#Mole-Labs/mole-di)
+
+
+
 # Mole-DI: A Simple, Fast, and Explicit DI Framework for Android
 
 Mole-DI is a lightweight, runtime dependency injection framework for Kotlin,  
