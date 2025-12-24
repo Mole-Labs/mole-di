@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.dokka) apply false
+    alias(libs.plugins.kotlin.binary.compatibility) apply false
 }
 
 buildscript {

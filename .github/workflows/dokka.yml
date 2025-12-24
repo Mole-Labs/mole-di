@@ -20,7 +20,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Documentation
-        run: ./gradlew dokkaHtml
+        run: ./gradlew dokkaGenerateHtml
 
       - name: Deploy Documentation to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

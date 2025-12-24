@@ -1,0 +1,211 @@
+public abstract interface annotation class com/mole/core/annotation/MoleInternalApi : java/lang/annotation/Annotation {
+}
+
+public abstract class com/mole/core/dsl/AbstractModuleBuilder {
+	public fun <init> ()V
+	public final fun baseScope (Lcom/mole/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public final fun build ()Lcom/mole/core/module/DependencyModule;
+	public final fun getFactories ()Ljava/util/List;
+	public abstract fun getScope ()Lcom/mole/core/scope/Scope;
+}
+
+public abstract class com/mole/core/dsl/AbstractPathBuilder {
+	public fun <init> ()V
+	public final fun getFind ()Lcom/mole/core/dsl/AbstractPathBuilder;
+	public abstract fun getPath ()Lcom/mole/core/path/Path;
+	public final fun of (Lcom/mole/core/dsl/Root;)Lcom/mole/core/path/Path;
+	public final fun of (Lcom/mole/core/qualifier/Qualifier;)Lcom/mole/core/dsl/AbstractPathBuilder;
+}
+
+public final class com/mole/core/dsl/DependencyModuleBuilder : com/mole/core/dsl/AbstractModuleBuilder {
+	public fun <init> (Lcom/mole/core/scope/Scope;)V
+	public fun getScope ()Lcom/mole/core/scope/Scope;
+}
+
+public abstract interface annotation class com/mole/core/dsl/ModuleBuilderDSL : java/lang/annotation/Annotation {
+}
+
+public final class com/mole/core/dsl/Root {
+	public static final field INSTANCE Lcom/mole/core/dsl/Root;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mole/core/dsl/ScopePathBuilder : com/mole/core/dsl/AbstractPathBuilder {
+	public fun <init> (Lcom/mole/core/path/Path;)V
+	public fun getPath ()Lcom/mole/core/path/Path;
+}
+
+public abstract interface class com/mole/core/module/DependencyFactory {
+	public abstract fun getCreate ()Lkotlin/jvm/functions/Function0;
+	public abstract fun getCreateRule ()Lcom/mole/core/qualifier/CreateRule;
+	public abstract fun getQualifier ()Lcom/mole/core/qualifier/Qualifier;
+	public fun invoke ()Ljava/lang/Object;
+}
+
+public final class com/mole/core/module/DependencyFactory$DefaultImpls {
+	public static fun invoke (Lcom/mole/core/module/DependencyFactory;)Ljava/lang/Object;
+}
+
+public final class com/mole/core/module/DependencyModule {
+	public fun <init> (Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;)Lcom/mole/core/module/DependencyModule;
+	public static synthetic fun copy$default (Lcom/mole/core/module/DependencyModule;Ljava/util/List;ILjava/lang/Object;)Lcom/mole/core/module/DependencyModule;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFactories ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mole/core/module/DependencyModuleKt {
+	public static final fun combine (Lcom/mole/core/scope/DefaultScope;Lkotlin/jvm/functions/Function1;)V
+	public static final fun combine (Lcom/mole/core/scope/DefaultScope;[Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class com/mole/core/module/InstanceDependencyFactory : com/mole/core/module/DependencyFactory {
+	public fun <init> (Lcom/mole/core/qualifier/Qualifier;Lcom/mole/core/qualifier/CreateRule;Lkotlin/jvm/functions/Function0;)V
+	public fun getCreate ()Lkotlin/jvm/functions/Function0;
+	public fun getCreateRule ()Lcom/mole/core/qualifier/CreateRule;
+	public fun getQualifier ()Lcom/mole/core/qualifier/Qualifier;
+	public fun invoke ()Ljava/lang/Object;
+}
+
+public final class com/mole/core/module/ScopeDependencyFactory : com/mole/core/module/DependencyFactory {
+	public fun <init> (Lcom/mole/core/qualifier/Qualifier;Lcom/mole/core/qualifier/CreateRule;Lkotlin/jvm/functions/Function0;)V
+	public fun getCreate ()Lkotlin/jvm/functions/Function0;
+	public fun getCreateRule ()Lcom/mole/core/qualifier/CreateRule;
+	public fun getQualifier ()Lcom/mole/core/qualifier/Qualifier;
+	public fun invoke ()Lcom/mole/core/scope/DefaultScope;
+	public synthetic fun invoke ()Ljava/lang/Object;
+}
+
+public final class com/mole/core/path/Path {
+	public fun <init> ()V
+	public fun <init> (Lcom/mole/core/qualifier/Qualifier;)V
+	public final fun append (Lcom/mole/core/qualifier/Qualifier;)V
+	public final fun getOrder ()Ljava/util/List;
+}
+
+public final class com/mole/core/qualifier/AnnotationQualifier : com/mole/core/qualifier/Qualifier {
+	public fun <init> (Lkotlin/reflect/KClass;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAnnotation ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mole/core/qualifier/ComplexQualifier : com/mole/core/qualifier/Qualifier {
+	public fun <init> (Lcom/mole/core/qualifier/Qualifier;Ljava/lang/Object;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/Object;
+	public final fun getQualifier ()Lcom/mole/core/qualifier/Qualifier;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mole/core/qualifier/CreateRule : java/lang/Enum {
+	public static final field FACTORY Lcom/mole/core/qualifier/CreateRule;
+	public static final field SINGLE Lcom/mole/core/qualifier/CreateRule;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/mole/core/qualifier/CreateRule;
+	public static fun values ()[Lcom/mole/core/qualifier/CreateRule;
+}
+
+public final class com/mole/core/qualifier/NamedQualifier : com/mole/core/qualifier/Qualifier {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/mole/core/qualifier/NamedQualifier;
+	public static synthetic fun copy$default (Lcom/mole/core/qualifier/NamedQualifier;Ljava/lang/String;ILjava/lang/Object;)Lcom/mole/core/qualifier/NamedQualifier;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/mole/core/qualifier/Qualifier {
+	public abstract fun equals (Ljava/lang/Object;)Z
+	public abstract fun hashCode ()I
+	public abstract fun toString ()Ljava/lang/String;
+}
+
+public final class com/mole/core/qualifier/QualifierExtKt {
+	public static final fun named (Ljava/lang/String;)Lcom/mole/core/qualifier/NamedQualifier;
+}
+
+public final class com/mole/core/qualifier/RootScopeQualifier : com/mole/core/qualifier/Qualifier {
+	public static final field INSTANCE Lcom/mole/core/qualifier/RootScopeQualifier;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mole/core/qualifier/TypeQualifier : com/mole/core/qualifier/Qualifier {
+	public fun <init> (Lkotlin/reflect/KClass;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mole/core/scope/DefaultScope : com/mole/core/scope/Scope {
+	public static final field Companion Lcom/mole/core/scope/DefaultScope$Companion;
+	public fun <init> (Lcom/mole/core/qualifier/Qualifier;Lcom/mole/core/scope/DefaultScope;)V
+	public synthetic fun <init> (Lcom/mole/core/qualifier/Qualifier;Lcom/mole/core/scope/DefaultScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun closeAll ()V
+	public fun declare (Lcom/mole/core/qualifier/Qualifier;Ljava/lang/Object;)V
+	public fun get (Lcom/mole/core/qualifier/Qualifier;)Ljava/lang/Object;
+	public final fun getParent ()Lcom/mole/core/scope/DefaultScope;
+	public final fun getQualifier ()Lcom/mole/core/qualifier/Qualifier;
+	public fun getSubScope (Lcom/mole/core/qualifier/Qualifier;)Lcom/mole/core/scope/DefaultScope;
+	public synthetic fun getSubScope (Lcom/mole/core/qualifier/Qualifier;)Lcom/mole/core/scope/Scope;
+	public fun registerFactory ([Lcom/mole/core/module/DependencyModule;)V
+	public fun resolvePath (Lcom/mole/core/path/Path;)Lcom/mole/core/scope/DefaultScope;
+	public synthetic fun resolvePath (Lcom/mole/core/path/Path;)Lcom/mole/core/scope/Scope;
+}
+
+public final class com/mole/core/scope/DefaultScope$Companion {
+}
+
+public final class com/mole/core/scope/LazyBind : com/mole/core/scope/ScopeComponent {
+	public fun <init> ()V
+	public fun getScope ()Lkotlin/Lazy;
+	public fun injectScope (Lkotlin/Lazy;)V
+	public fun isInitialized ()Z
+}
+
+public abstract interface class com/mole/core/scope/RootComponent {
+	public fun combineToRoot ([Lkotlin/jvm/functions/Function1;)V
+	public abstract fun getScope ()Lcom/mole/core/scope/DefaultScope;
+}
+
+public final class com/mole/core/scope/RootComponent$DefaultImpls {
+	public static fun combineToRoot (Lcom/mole/core/scope/RootComponent;[Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface class com/mole/core/scope/Scope {
+	public abstract fun closeAll ()V
+	public abstract fun declare (Lcom/mole/core/qualifier/Qualifier;Ljava/lang/Object;)V
+	public abstract fun get (Lcom/mole/core/qualifier/Qualifier;)Ljava/lang/Object;
+	public abstract fun getSubScope (Lcom/mole/core/qualifier/Qualifier;)Lcom/mole/core/scope/Scope;
+	public abstract fun registerFactory ([Lcom/mole/core/module/DependencyModule;)V
+	public abstract fun resolvePath (Lcom/mole/core/path/Path;)Lcom/mole/core/scope/Scope;
+}
+
+public abstract interface class com/mole/core/scope/ScopeComponent {
+	public abstract fun getScope ()Lkotlin/Lazy;
+	public fun injectScope (Lkotlin/Lazy;)V
+	public fun isInitialized ()Z
+}
+
+public final class com/mole/core/scope/ScopeComponent$DefaultImpls {
+	public static fun injectScope (Lcom/mole/core/scope/ScopeComponent;Lkotlin/Lazy;)V
+	public static fun isInitialized (Lcom/mole/core/scope/ScopeComponent;)Z
+}
+
+public final class com/mole/core/scope/ScopeExtKt {
+	public static final fun get (Lcom/mole/core/scope/DefaultScope;Lcom/mole/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun subScope (Lcom/mole/core/scope/DefaultScope;Lkotlin/jvm/functions/Function1;)Lcom/mole/core/scope/DefaultScope;
+}
+
